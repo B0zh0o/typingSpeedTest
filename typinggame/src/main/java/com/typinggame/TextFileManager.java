@@ -1,4 +1,5 @@
-package com.cblproject;
+package com.typinggame;
+
 
 public class TextFileManager {
     
