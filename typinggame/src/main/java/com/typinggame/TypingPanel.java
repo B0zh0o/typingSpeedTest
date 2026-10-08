@@ -24,7 +24,7 @@ public class TypingPanel extends JPanel {
 
     public TypingPanel() {
 
-        this.targetText = "Hello World! This is a demo for Thursday's Practical Session";
+        this.targetText = "Hello World! This is a demo for Thursday's Practical Session Hello World Hello World";
         this.currentPosition = 0;
         this.currentWordEnd = findWordSpace(currentPosition);
 
@@ -96,6 +96,10 @@ public class TypingPanel extends JPanel {
             public void keyTyped(KeyEvent e) {
 
                 char typedCharacter = e.getKeyChar();
+
+                if(typedCharacter == '\b') {
+                    return;
+                }
                 if(Character.isWhitespace(typedCharacter)) {
                     handleSpace();
                     return;
@@ -217,5 +221,7 @@ public class TypingPanel extends JPanel {
     private void handleSpace() {
         currentPosition = currentWordEnd + 1;
         currentWordEnd = findWordSpace(currentPosition);
+
+    
     }
 }
