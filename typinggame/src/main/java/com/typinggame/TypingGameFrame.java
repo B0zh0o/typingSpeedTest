@@ -9,7 +9,7 @@ public class TypingGameFrame extends JFrame{
     private TypingPanel typingPanel; 
 
     public TypingGameFrame() {
-        setTitle("Typing Game");
+        setTitle("Typing Game Demo");
         setSize(1000, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -25,7 +25,4 @@ public class TypingGameFrame extends JFrame{
         typingPanel.requestFocusInWindow();
     }
 
-    public void requestTypingFocus() {
-        typingPanel.requestFocusInWindow();
-    }
 }

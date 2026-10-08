@@ -20,11 +20,13 @@ public class TypingPanel extends JPanel {
 
     private String targetText;
     private int currentPosition;
+    private int currentWordEnd;
 
     public TypingPanel() {
 
-        targetText = "This is a demo for the visual";
-        currentPosition = 0;
+        this.targetText = "Hello World! This is a demo for Thursday's Practical Session";
+        this.currentPosition = 0;
+        this.currentWordEnd = findWordSpace(currentPosition);
 
         /*
          * BorderLayout makes the text pane fill the available
@@ -94,6 +96,10 @@ public class TypingPanel extends JPanel {
             public void keyTyped(KeyEvent e) {
 
                 char typedCharacter = e.getKeyChar();
+                if(Character.isWhitespace(typedCharacter)) {
+                    handleSpace();
+                    return;
+                }
 
                 /*
                  * Ignore typing once we have reached the
@@ -107,8 +113,7 @@ public class TypingPanel extends JPanel {
                  * Get the character that the user is supposed
                  * to type at the current position.
                  */
-                char expectedCharacter =
-                    targetText.charAt(currentPosition);
+                char expectedCharacter = targetText.charAt(currentPosition);
 
                 /*
                  * Compare what they typed with what was expected.
@@ -132,7 +137,7 @@ public class TypingPanel extends JPanel {
             public void keyPressed(KeyEvent e) {
 
                 /*
-                 * Simple Backspace support.
+                 * Simple Backspace support. DOESNT WORK
                  */
                 if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
 
@@ -151,13 +156,9 @@ public class TypingPanel extends JPanel {
      * Makes the entire target text faded.
      */
     private void makeTargetTextFaded() {
-
         StyledDocument document = textPane.getStyledDocument();
-
         SimpleAttributeSet style = new SimpleAttributeSet();
-
         StyleConstants.setForeground(style, new Color(100, 100, 100));
-
         document.setCharacterAttributes(0, targetText.length(), style, true);
     }
 
@@ -168,9 +169,7 @@ public class TypingPanel extends JPanel {
     private void markCorrect(int position) {
 
         StyledDocument document = textPane.getStyledDocument();
-
         SimpleAttributeSet style = new SimpleAttributeSet();
-
         StyleConstants.setForeground(style, new Color(230, 230, 230));
 
         document.setCharacterAttributes(position, 1, style, true);
@@ -194,7 +193,7 @@ public class TypingPanel extends JPanel {
     /*
      * Changes a character back to the faded target colour.
      *
-     * Currently used when Backspace is pressed.
+     * Currently used when Backspace is pressed. I cant get it to work 
      */
     private void markTargetCharacter(int position) {
 
@@ -205,5 +204,18 @@ public class TypingPanel extends JPanel {
         StyleConstants.setForeground(style, new Color(100, 100, 100));
 
         document.setCharacterAttributes(position, 1, style, true);
+    }
+
+    private int findWordSpace(int position) {
+        int spacePosition = position;
+        while((spacePosition < targetText.length()) &&  !Character.isWhitespace(targetText.charAt(spacePosition))) {
+            spacePosition++;
+        }
+        return spacePosition;
+    } 
+
+    private void handleSpace() {
+        currentPosition = currentWordEnd + 1;
+        currentWordEnd = findWordSpace(currentPosition);
     }
 }
