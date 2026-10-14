@@ -1,23 +1,121 @@
 package com.typinggame;
 
-//import java.awt.event.StyleConstants;
-//import java.awt.event.KeyEvent;
+
 
 
 public class TypingSession {
     
-    TypingTimer typingTimer = new TypingTimer();
-    String targetText;
-    Word[] wordsArray = convertIntoWordsArray(splitText(targetText));
-
-    int currentLetterIndex = 0;
-    int currentWordIndex = 0; 
-    char lastUserInput;
+    private String targetText; 
+    private int currentPosition;
+    private int currentWordEnd;
+    private boolean spaceJustHandled; 
 
     public TypingSession(String targetText) {
         this.targetText = targetText;
+        this.currentPosition = 0;
+        this.currentWordEnd = findWordSpace(currentPosition); 
+        this.spaceJustHandled = false;
     }
 
+    private int findWordSpace(int position) {
+        int spacePosition = position;
+        while((spacePosition < targetText.length()) &&  !Character.isWhitespace(targetText.charAt(spacePosition))) {
+            spacePosition++;
+            }
+        return spacePosition;
+    } 
+
+        public boolean handleCharacter(char typedCharacter) {
+        if (currentPosition >= targetText.length()) {
+            return false;
+        }
+
+        spaceJustHandled = false; 
+
+        char expectedCharacter = targetText.charAt(currentPosition);
+
+        boolean correct = typedCharacter == expectedCharacter;
+
+        currentPosition++;
+
+        return correct;
+    }
+
+        public int handleBackspace() {
+
+        if (currentPosition <= 0) {
+            return -1;
+        }
+
+        currentPosition--;
+
+        currentWordEnd = findWordSpace(currentPosition);
+
+        spaceJustHandled = false;
+
+        return currentPosition;
+    }
+
+    public int handleSpace() {
+
+
+        if(spaceJustHandled) {
+            return -1;
+        }
+
+        int oldWordEnd = currentWordEnd;
+
+        /*
+         * Move to the character after the current word's whitespace.
+         */
+        if (currentWordEnd < targetText.length()) {
+            currentPosition = currentWordEnd + 1;
+        } else {
+            currentPosition = targetText.length();
+        }
+
+        /*
+         * Skip additional whitespace if necessary.
+         */
+        while (currentPosition < targetText.length() && Character.isWhitespace(targetText.charAt(currentPosition))) {
+
+            currentPosition++;
+        }
+
+        /*  
+         * Find the end of the new word.
+         */
+        currentWordEnd = findWordSpace(currentPosition);
+
+        spaceJustHandled = true;
+
+        /*
+         * Return the old word ending so the panel knows
+         * which characters were skipped.
+         */
+        return oldWordEnd;
+    }
+
+
+    public int getCurrentPosition() {
+        return currentPosition;
+    }
+
+    public int getCurrentWordEnd() {
+        return currentWordEnd;
+    }
+
+    public String getTargetText() {
+        return targetText;
+    }
+
+    public boolean isFinished() {
+        return currentPosition >= targetText.length();
+    }
+}
+
+
+/*
     public void timingSessionStarted() {
         typingTimer.startTimer();
         
@@ -48,4 +146,5 @@ public class TypingSession {
         }
         return wordsArray;
     }
-}
+}  
+*/

@@ -13,26 +13,31 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.text.NumberFormat;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Highlighter;
+import javax.swing.text.JTextComponent;
+
+import java.awt.Graphics;
+import java.awt.Shape;
+import java.awt.geom.Rectangle2D;
 
 public class TypingPanel extends JPanel {
 
     private JTextPane textPane;
-
-    private String targetText;
-    private int currentPosition;
-    private int currentWordEnd;
+    private TypingSession session;
 
     public TypingPanel() {
 
-        this.targetText = "Hello World! This is a demo for Thursday's Practical Session Hello World Hello World";
-        this.currentPosition = 0;
-        this.currentWordEnd = findWordSpace(currentPosition);
+        String targetText = "Hello World! This is a demo for Thursday's Practical Session Hello World Hello World";
+        session = new TypingSession(targetText);
 
         /*
          * BorderLayout makes the text pane fill the available
          * space inside this panel.
          */
         setLayout(new BorderLayout());
+        
 
         /*
          * Dark background for the panel.
@@ -54,7 +59,7 @@ public class TypingPanel extends JPanel {
         /*
          * Put the entire target text into the text pane.
          */
-        textPane.setText(targetText);
+        textPane.setText(session.getTargetText());
 
         textPane.setEditable(false);
 
@@ -83,6 +88,10 @@ public class TypingPanel extends JPanel {
         makeTargetTextFaded();
 
         /*
+         * Set original underline
+         */
+        setUnderline(session.getCurrentPosition(), true);
+        /*
          * The panel needs to be allowed to receive keyboard focus.
          */
         setFocusable(true);
@@ -101,7 +110,13 @@ public class TypingPanel extends JPanel {
                     return;
                 }
                 if(Character.isWhitespace(typedCharacter)) {
-                    handleSpace();
+                    int oldPosition = session.getCurrentPosition();
+
+                    setUnderline(oldPosition, false);
+                    
+                    handleSpaceVisually();
+
+                    setUnderline(session.getCurrentPosition(), true);
                     return;
                 }
 
@@ -109,32 +124,23 @@ public class TypingPanel extends JPanel {
                  * Ignore typing once we have reached the
                  * end of the target text.
                  */
-                if (currentPosition >= targetText.length()) {
+                if (session.isFinished()) {
                     return;
                 }
 
-                /*
-                 * Get the character that the user is supposed
-                 * to type at the current position.
-                 */
-                char expectedCharacter = targetText.charAt(currentPosition);
+                int oldPosition = session.getCurrentPosition();
 
-                /*
-                 * Compare what they typed with what was expected.
-                 */
-                if (typedCharacter == expectedCharacter) {
+                setUnderline(oldPosition, false);
 
-                    markCorrect(currentPosition);
+                boolean correct = session.handleCharacter(typedCharacter);
 
+                if (correct) {
+                    markCorrect(oldPosition);
                 } else {
-
-                    markIncorrect(currentPosition);
+                    markIncorrect(oldPosition);
                 }
 
-                /*
-                 * Move to the next character.
-                 */
-                currentPosition++;
+                setUnderline(session.getCurrentPosition(), true);
             }
 
             @Override
@@ -144,16 +150,39 @@ public class TypingPanel extends JPanel {
                  * Simple Backspace support. DOESNT WORK
                  */
                 if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+                    int oldPosition = session.getCurrentPosition();
 
-                    if (currentPosition > 0) {
+                    setUnderline(oldPosition, false);
+                    
+                    int position = session.handleBackspace();
 
-                        currentPosition--;
+                    if (position != -1) {
+                        markTargetCharacter(position);
 
-                        markTargetCharacter(currentPosition);
+                        setUnderline(session.getCurrentPosition(), true);
                     }
                 }
             }
         });
+    }
+
+    private void handleSpaceVisually() {
+
+        int start = session.getCurrentPosition();
+
+        int oldWordEnd = session.handleSpace();
+
+        if (oldWordEnd == -1) {
+            return;
+        }
+
+        for (int i = start; i < oldWordEnd; i++) {
+            markIncorrect(i);
+        }
+
+        if (oldWordEnd < session.getTargetText().length()) {
+            markCorrect(oldWordEnd);
+        }
     }
 
     /*
@@ -163,7 +192,8 @@ public class TypingPanel extends JPanel {
         StyledDocument document = textPane.getStyledDocument();
         SimpleAttributeSet style = new SimpleAttributeSet();
         StyleConstants.setForeground(style, new Color(100, 100, 100));
-        document.setCharacterAttributes(0, targetText.length(), style, true);
+        StyleConstants.setBold(style, false);
+        document.setCharacterAttributes(0, session.getTargetText().length(), style, true);
     }
 
     /*
@@ -175,7 +205,7 @@ public class TypingPanel extends JPanel {
         StyledDocument document = textPane.getStyledDocument();
         SimpleAttributeSet style = new SimpleAttributeSet();
         StyleConstants.setForeground(style, new Color(230, 230, 230));
-
+        StyleConstants.setBold(style, false);
         document.setCharacterAttributes(position, 1, style, true);
     }
 
@@ -184,11 +214,8 @@ public class TypingPanel extends JPanel {
      * user types it incorrectly.
      */
     private void markIncorrect(int position) {
-
         StyledDocument document = textPane.getStyledDocument();
-
         SimpleAttributeSet style = new SimpleAttributeSet();
-
         StyleConstants.setForeground(style, new Color(220, 90, 90));
         StyleConstants.setBold(style, true);
         document.setCharacterAttributes(position, 1, style, true);
@@ -206,22 +233,29 @@ public class TypingPanel extends JPanel {
         SimpleAttributeSet style = new SimpleAttributeSet();
 
         StyleConstants.setForeground(style, new Color(100, 100, 100));
+        StyleConstants.setBold(style, false);
 
         document.setCharacterAttributes(position, 1, style, true);
     }
 
-    private int findWordSpace(int position) {
-        int spacePosition = position;
-        while((spacePosition < targetText.length()) &&  !Character.isWhitespace(targetText.charAt(spacePosition))) {
-            spacePosition++;
+    private void setUnderline(int position, boolean underline) {
+        if (position < 0 || position >= session.getTargetText().length()) {
+            return; 
         }
-        return spacePosition;
-    } 
 
-    private void handleSpace() {
-        currentPosition = currentWordEnd + 1;
-        currentWordEnd = findWordSpace(currentPosition);
-
-    
+        StyledDocument document = textPane.getStyledDocument();
+        SimpleAttributeSet style = new SimpleAttributeSet();
+        StyleConstants.setUnderline(style, underline);
+        document.setCharacterAttributes(position, 1, style, false);
     }
+
+    public void setTargetText(String targetText) {
+        session = new TypingSession(targetText);
+        textPane.setText(targetText);
+        makeTargetTextFaded();
+        setUnderline(session.getCurrentPosition(), true);
+
+        requestFocusInWindow();
+    }
+
 }
