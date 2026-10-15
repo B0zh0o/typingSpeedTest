@@ -29,7 +29,7 @@ public class TypingPanel extends JPanel {
 
     public TypingPanel() {
 
-        String targetText = "Hello World! This is a demo for Thursday's Practical Session Hello World Hello World";
+        String targetText = "";
         session = new TypingSession(targetText);
 
         /*
@@ -177,7 +177,7 @@ public class TypingPanel extends JPanel {
         }
 
         for (int i = start; i < oldWordEnd; i++) {
-            markIncorrect(i);
+            markTargetCharacter(i);
         }
 
         if (oldWordEnd < session.getTargetText().length()) {

@@ -44,7 +44,6 @@ public class TypingGameFrame extends JFrame {
          * This code runs whenever the button is clicked.
          */
         loadTextButton.addActionListener(e -> {
-
             try {
 
                 String loadedText =
