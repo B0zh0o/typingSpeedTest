@@ -1,6 +1,6 @@
 package com.typinggame;
 
-
+import java.util.Stack;
 
 
 public class TypingSession {
@@ -8,13 +8,22 @@ public class TypingSession {
     private String targetText; 
     private int currentPosition;
     private int currentWordEnd;
-    private boolean spaceJustHandled; 
+    private boolean spaceJustHandled;
+
+    private int currentWordStart;
+    private int lockedBoundary = 0;
+    private boolean currentWordHasErrors = false;
+    private boolean hasTypedInCurrentWord = false;
+    private int lastActivePosition = 0;
 
     public TypingSession(String targetText) {
         this.targetText = targetText;
         this.currentPosition = 0;
         this.currentWordEnd = findWordSpace(currentPosition); 
         this.spaceJustHandled = false;
+        this.currentWordStart = 0;
+        this.lockedBoundary = 0;
+        this.lastActivePosition = 0;
     }
 
     private int findWordSpace(int position) {
@@ -25,62 +34,103 @@ public class TypingSession {
         return spacePosition;
     } 
 
-        public boolean handleCharacter(char typedCharacter) {
+    private void refreshCurrentWordBounds() {
+        int start = currentPosition;
+        while (start > lockedBoundary && !Character.isWhitespace(targetText.charAt(start - 1))) {
+            start--;
+        }
+        currentWordStart = start;
+        currentWordEnd = findWordSpace(currentPosition);
+    }
+
+    public boolean handleCharacter(char typedCharacter) {
         if (currentPosition >= targetText.length()) {
             return false;
         }
 
-        spaceJustHandled = false; 
+        hasTypedInCurrentWord = true;
+
+        spaceJustHandled = false;
 
         char expectedCharacter = targetText.charAt(currentPosition);
 
-        boolean correct = typedCharacter == expectedCharacter;
+        boolean correct = (typedCharacter == expectedCharacter);
+
+        if (!correct) {
+            currentWordHasErrors = true;
+        }
+
+        if (Character.isWhitespace(expectedCharacter)) {
+            currentWordHasErrors = true;
+        }
 
         currentPosition++;
 
         return correct;
     }
 
-        public int handleBackspace() {
+    public int handleBackspace() {
 
-        if (currentPosition <= 0) {
-            return -1;
+        if (currentPosition <= lockedBoundary) {
+            refreshCurrentWordBounds();
+            return currentPosition;
         }
 
-        currentPosition--;
+       if (currentPosition <= currentWordStart) {
+            currentPosition = lastActivePosition;
+        } else {
+            currentPosition--;
+        }
 
-        currentWordEnd = findWordSpace(currentPosition);
+        if (currentPosition < lockedBoundary) {
+            currentPosition = lockedBoundary;
+        }
 
+        refreshCurrentWordBounds();
         spaceJustHandled = false;
 
         return currentPosition;
     }
 
     public int handleSpace() {
-
-
         if(spaceJustHandled) {
             return -1;
         }
 
+        boolean reachedEndOfWord = (currentPosition == currentWordEnd);
+        boolean wordIsCorrect = reachedEndOfWord && !currentWordHasErrors && hasTypedInCurrentWord;
+
         int oldWordEnd = currentWordEnd;
+
+        lastActivePosition = currentPosition;
+
+        int nextPosition;
 
         /*
          * Move to the character after the current word's whitespace.
          */
         if (currentWordEnd < targetText.length()) {
-            currentPosition = currentWordEnd + 1;
+            nextPosition = currentWordEnd + 1;
         } else {
-            currentPosition = targetText.length();
+            nextPosition = targetText.length();
         }
 
         /*
          * Skip additional whitespace if necessary.
          */
-        while (currentPosition < targetText.length() && Character.isWhitespace(targetText.charAt(currentPosition))) {
-
-            currentPosition++;
+        while (nextPosition < targetText.length() && Character.isWhitespace(targetText.charAt(nextPosition))) {
+            nextPosition++;
         }
+    
+        if (wordIsCorrect) {
+            lockedBoundary = nextPosition;
+            lastActivePosition = nextPosition;
+        }
+
+        currentPosition = nextPosition;
+        currentWordStart = currentPosition;
+        currentWordHasErrors = false;
+        hasTypedInCurrentWord = false;
 
         /*  
          * Find the end of the new word.

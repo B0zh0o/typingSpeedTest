@@ -12,6 +12,7 @@ public class TypingGameFrame extends JFrame {
 
     private TypingPanel typingPanel;
     private TextFileManager textFileManager;
+    private String loadedText = "";
 
     public TypingGameFrame() {
 
@@ -46,7 +47,7 @@ public class TypingGameFrame extends JFrame {
         loadTextButton.addActionListener(e -> {
             try {
 
-                String loadedText =
+                loadedText =
                     textFileManager.chooseTextFile(this);
 
                 /*
@@ -87,6 +88,22 @@ public class TypingGameFrame extends JFrame {
             }
         });
 
+        JButton resetButton = new JButton("Reset");
+
+        resetButton.addActionListener(e -> {
+                if (typingPanel.session.getTargetText() == null || typingPanel.session.getTargetText().isBlank()) {
+                    JOptionPane.showMessageDialog(
+                        this,
+                        "No text loaded to reset.",
+                        "Empty Text",
+                        JOptionPane.WARNING_MESSAGE
+                    );
+
+                    return;
+                }
+                typingPanel.resetSession();;
+        });
+
         /*
          * Small panel containing window controls.
          */
@@ -103,6 +120,14 @@ public class TypingGameFrame extends JFrame {
          * Typing area takes the rest of the window.
          */
         add(typingPanel, BorderLayout.CENTER);
+
+
+        JPanel bottomPanel = new JPanel();
+
+        bottomPanel.add(resetButton);
+
+        add(bottomPanel, BorderLayout.SOUTH);
+
     }
 
     /*

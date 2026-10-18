@@ -25,7 +25,7 @@ import java.awt.geom.Rectangle2D;
 public class TypingPanel extends JPanel {
 
     private JTextPane textPane;
-    private TypingSession session;
+    public TypingSession session;
 
     public TypingPanel() {
 
@@ -255,6 +255,15 @@ public class TypingPanel extends JPanel {
         makeTargetTextFaded();
         setUnderline(session.getCurrentPosition(), true);
 
+        requestFocusInWindow();
+    }
+
+    public void resetSession() {
+        String currentText = session.getTargetText();
+        session = new TypingSession(currentText);
+        textPane.setText(currentText);
+        makeTargetTextFaded();
+        setUnderline(session.getCurrentPosition(), true);
         requestFocusInWindow();
     }
 
