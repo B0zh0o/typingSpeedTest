@@ -16,6 +16,12 @@ public class TypingSession {
     private boolean hasTypedInCurrentWord = false;
     private int lastActivePosition = 0;
 
+    public int correctCharactersTyped;
+    public int incorrectCharactersTyped;
+    public int totalCharactersTyped;
+    private int accuracyPercentage;
+    public int wpm;
+
     public TypingSession(String targetText) {
         this.targetText = targetText;
         this.currentPosition = 0;
@@ -24,6 +30,9 @@ public class TypingSession {
         this.currentWordStart = 0;
         this.lockedBoundary = 0;
         this.lastActivePosition = 0;
+        this.correctCharactersTyped = 0;
+        this.incorrectCharactersTyped = 0;
+        this.wpm = 0;
     }
 
     private int findWordSpace(int position) {
@@ -48,6 +57,7 @@ public class TypingSession {
             return false;
         }
 
+        totalCharactersTyped++;
         hasTypedInCurrentWord = true;
 
         spaceJustHandled = false;
@@ -56,7 +66,9 @@ public class TypingSession {
 
         boolean correct = (typedCharacter == expectedCharacter);
 
-        if (!correct) {
+        if (correct) {
+            correctCharactersTyped++;
+        } else {
             currentWordHasErrors = true;
         }
 
@@ -144,6 +156,27 @@ public class TypingSession {
          * which characters were skipped.
          */
         return oldWordEnd;
+    }
+
+    public int calculateAccuracy() {
+        if (totalCharactersTyped == 0) {
+            return 100;
+        }
+        double accuracy = ((double) correctCharactersTyped / totalCharactersTyped * 100);
+        accuracyPercentage = (int) Math.round(accuracy);
+        return accuracyPercentage;
+    }
+    
+    public int calculateWPM(int elapsedSeconds) {
+        if (elapsedSeconds <= 0) {
+            wpm = 0;
+        }
+
+        double minutes = elapsedSeconds / 60.0;
+
+        wpm = (int)((correctCharactersTyped / 5.0) / minutes);
+
+        return wpm;
     }
 
 

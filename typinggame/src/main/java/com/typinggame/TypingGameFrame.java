@@ -19,6 +19,7 @@ public class TypingGameFrame extends JFrame {
     private Timer typingTimer;
     private int elapsedSeconds = 0;
     private JLabel timerLabel;
+    private JLabel wpmLabel;
 
     public TypingGameFrame() {
 
@@ -43,10 +44,13 @@ public class TypingGameFrame extends JFrame {
         textFileManager = new TextFileManager();
 
         timerLabel = new JLabel("Time: 0s");
+        wpmLabel = new JLabel("WPM: 0");
 
         typingTimer = new Timer(1000, e -> {
             elapsedSeconds++;
             timerLabel.setText("Time: " + elapsedSeconds + "s");
+            int currentWpm = typingPanel.session.calculateWPM(elapsedSeconds);
+            wpmLabel.setText("WPM: " + currentWpm);
         });
 
         /*
@@ -133,6 +137,7 @@ public class TypingGameFrame extends JFrame {
         controlPanel.add(loadTextButton);
         controlPanel.add(generateButton);
         controlPanel.add(timerLabel);
+        controlPanel.add(wpmLabel);
 
         /*
          * Controls at the top.
@@ -169,6 +174,7 @@ public class TypingGameFrame extends JFrame {
             }
             elapsedSeconds = 0;
             timerLabel.setText("Time: 0s");
+            wpmLabel.setText("WPM: 0");
         }
     }
 
@@ -183,5 +189,6 @@ public class TypingGameFrame extends JFrame {
         }
         elapsedSeconds = 0;
         timerLabel.setText("Time: 0s");
+        wpmLabel.setText("WPM: 0");
     }
 }
