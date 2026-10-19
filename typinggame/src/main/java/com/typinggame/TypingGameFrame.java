@@ -4,15 +4,21 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.Timer;
+import javax.swing.JLabel;
 
 import java.awt.BorderLayout;
 import java.io.IOException;
+import java.util.Random;
 
 public class TypingGameFrame extends JFrame {
 
     private TypingPanel typingPanel;
     private TextFileManager textFileManager;
     private String loadedText = "";
+    private Timer typingTimer;
+    private int elapsedSeconds = 0;
+    private JLabel timerLabel;
 
     public TypingGameFrame() {
 
@@ -33,8 +39,15 @@ public class TypingGameFrame extends JFrame {
         /*
          * Create the main parts of the program.
          */
-        typingPanel = new TypingPanel();
+        typingPanel = new TypingPanel(this);
         textFileManager = new TextFileManager();
+
+        timerLabel = new JLabel("Time: 0s");
+
+        typingTimer = new Timer(1000, e -> {
+            elapsedSeconds++;
+            timerLabel.setText("Time: " + elapsedSeconds + "s");
+        });
 
         /*
          * Create the Load Text button.
@@ -75,7 +88,7 @@ public class TypingGameFrame extends JFrame {
                 /*
                  * Give the newly loaded text to the typing panel.
                  */
-                typingPanel.setTargetText(loadedText);
+                startNewSession(loadedText);
 
             } catch (IOException exception) {
 
@@ -86,6 +99,14 @@ public class TypingGameFrame extends JFrame {
                     JOptionPane.ERROR_MESSAGE
                 );
             }
+        });
+
+        JButton generateButton = new JButton("Generate");
+
+        generateButton.addActionListener(e -> {
+            RandomWordGenerator generator = new RandomWordGenerator("typinggame/wordsPool");
+            loadedText = generator.generateRandomText(400);
+            startNewSession(loadedText);
         });
 
         JButton resetButton = new JButton("Reset");
@@ -110,6 +131,8 @@ public class TypingGameFrame extends JFrame {
         JPanel controlPanel = new JPanel();
 
         controlPanel.add(loadTextButton);
+        controlPanel.add(generateButton);
+        controlPanel.add(timerLabel);
 
         /*
          * Controls at the top.
@@ -135,5 +158,30 @@ public class TypingGameFrame extends JFrame {
      */
     public void requestTypingFocus() {
         typingPanel.requestFocusInWindow();
+    }
+
+    private void startNewSession(String text) {
+        typingPanel.setTargetText(text);
+
+        if(typingTimer != null) {
+            if (typingTimer.isRunning()) {
+                typingTimer.stop();
+            }
+            elapsedSeconds = 0;
+            timerLabel.setText("Time: 0s");
+        }
+    }
+
+    public void startTimerIfNeeded() {
+        if (typingTimer != null && !typingTimer.isRunning()) {
+            typingTimer.start();
+        }
+    }
+    public void resetTimer() {
+        if (typingTimer != null) {
+            typingTimer.stop();
+        }
+        elapsedSeconds = 0;
+        timerLabel.setText("Time: 0s");
     }
 }

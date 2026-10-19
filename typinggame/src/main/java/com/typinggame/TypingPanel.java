@@ -26,11 +26,13 @@ public class TypingPanel extends JPanel {
 
     private JTextPane textPane;
     public TypingSession session;
+    private TypingGameFrame parentFrame;
 
-    public TypingPanel() {
+    public TypingPanel(TypingGameFrame parentFrame) {
 
         String targetText = "";
         session = new TypingSession(targetText);
+        this.parentFrame = parentFrame;
 
         /*
          * BorderLayout makes the text pane fill the available
@@ -103,6 +105,9 @@ public class TypingPanel extends JPanel {
 
             @Override
             public void keyTyped(KeyEvent e) {
+                if (parentFrame != null) {
+                    parentFrame.startTimerIfNeeded();
+                }
 
                 char typedCharacter = e.getKeyChar();
 
@@ -145,7 +150,9 @@ public class TypingPanel extends JPanel {
 
             @Override
             public void keyPressed(KeyEvent e) {
-
+                if (parentFrame != null) {
+                    parentFrame.startTimerIfNeeded();
+                }
                 /*
                  * Simple Backspace support. DOESNT WORK
                  */
@@ -265,6 +272,7 @@ public class TypingPanel extends JPanel {
         makeTargetTextFaded();
         setUnderline(session.getCurrentPosition(), true);
         requestFocusInWindow();
+        parentFrame.resetTimer();
     }
 
 }
