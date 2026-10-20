@@ -15,7 +15,8 @@ public class TypingGameFrame extends JFrame {
 
     private TypingPanel typingPanel;
     private TextFileManager textFileManager;
-    private String loadedText = "";
+    private String loadedText;
+    private RandomWordGenerator initialGenerator;
     private Timer typingTimer;
     private int elapsedSeconds = 0;
     private JLabel timerLabel;
@@ -42,6 +43,10 @@ public class TypingGameFrame extends JFrame {
          */
         typingPanel = new TypingPanel(this);
         textFileManager = new TextFileManager();
+
+        initialGenerator = new RandomWordGenerator("typinggame/wordsPool");
+        loadedText = initialGenerator.generateRandomText(400);
+        startNewSession(loadedText);
 
         timerLabel = new JLabel("Time: 0s");
         wpmLabel = new JLabel("WPM: 0");

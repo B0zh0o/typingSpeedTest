@@ -8,6 +8,7 @@ public class Main {
         SwingUtilities.invokeLater(() -> {
             TypingGameFrame frame = new TypingGameFrame();
             frame.setVisible(true);
+            frame.requestTypingFocus();
         });
     }
 }
