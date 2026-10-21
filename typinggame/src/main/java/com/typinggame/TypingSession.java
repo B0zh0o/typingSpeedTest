@@ -25,6 +25,7 @@ public class TypingSession {
 
 
     public TypingSession(String targetText) {
+        
         this.targetText = targetText;
         this.currentPosition = 0;
         this.currentWordEnd = findWordSpace(currentPosition); 

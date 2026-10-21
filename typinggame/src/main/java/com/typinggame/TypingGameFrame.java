@@ -209,9 +209,17 @@ public class TypingGameFrame extends JFrame {
         if (typingTimer != null) {
             typingTimer.stop();
         }
-        secondsLeft = 60;
-        timerLabel.setText("60s");
-        wpmLabel.setText("WPM: 0");
-        typingPanel.setEnabled(true);
+        
+        if (secondsLeft <= 0) {
+            RandomWordGenerator generator = new RandomWordGenerator("typinggame/wordsPool");
+            loadedText = generator.generateRandomText(400);
+            startNewSession(loadedText);
+        } else {
+            secondsLeft = 60;
+            timerLabel.setText("60s");
+            wpmLabel.setText("WPM: 0");
+            typingPanel.resetSession();
+            typingPanel.setEnabled(true);
+        }
     }
 }

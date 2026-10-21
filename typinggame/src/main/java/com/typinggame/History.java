@@ -18,14 +18,12 @@ public class History {
 
     public History(TypingSession session) {
         this.id++;
-        this.sessionId = session.id;
         this.sessionWpm = session.wpm;
 
         Map<ErrorType, Long> errorCounts = session.getErrorTracker().getErrorCountsByType();   
         
         this.wrongCharacterErrorCount = errorCounts.getOrDefault(ErrorType.WRONG_CHARACTER, 0L).intValue();
         this.missingCharacterErrorCount = errorCounts.getOrDefault(ErrorType.MISSING_CHARACTER, 0L).intValue();
-        this.extraCharacterErrorCount = errorCounts.getOrDefault(ErrorType.EXTRA_CHARACTER, 0L).intValue();
         this.missingSpaceErrorCount = errorCounts.getOrDefault(ErrorType.MISSING_SPACE, 0L).intValue();
     }
 }
