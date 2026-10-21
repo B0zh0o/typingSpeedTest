@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 public class ErrorTracker {
 
-    private final List<TypingError> errors = new ArrayList<>();
+    public final List<TypingError> errors = new ArrayList<>();
 
     public void record(ErrorType type, int position, Character expCharacter, Character typCharacter) {
         errors.add(new TypingError(type, position, expCharacter, typCharacter));

@@ -30,6 +30,8 @@ public class TypingSession {
     private final List<Character> pendingInput;
     private int pendingTargetPosition;
 
+    public List<TypingError> errorsList;
+
     public TypingSession(String targetText) {
         this.targetText = targetText;
         this.currentPosition = 0;
@@ -43,6 +45,7 @@ public class TypingSession {
         this.activeCorrectPositions = new HashSet<>();
         this.pendingInput = new ArrayList<>();
         this.pendingTargetPosition = -1;
+        this.errorsList = List.copyOf(errorTracker.errors);
     }
 
     private int findWordSpace(int position) {
@@ -204,70 +207,70 @@ public class TypingSession {
 
     private void processCharacter(char typCharacter,TypingUpdate update) {
 
-    if (currentPosition >= targetText.length()) {
-        recordExtraCharacter(currentPosition, typCharacter);
-        return;
-    }
-
-    /*
-     * Target expects a space, but user continued typing.
-     */
-    if (Character.isWhitespace(targetText.charAt(currentPosition))) {
-
-        recordMissingSpaces(update);
-
         if (currentPosition >= targetText.length()) {
+            recordExtraCharacter(currentPosition, typCharacter);
             return;
         }
-    }
 
-    char expectedCharacter =
-        targetText.charAt(currentPosition);
+        /*
+        * Target expects a space, but user continued typing.
+        */
+        if (Character.isWhitespace(targetText.charAt(currentPosition))) {
 
-    /*
-     * CASE 1: exact match.
-     */
-    if (typCharacter == expectedCharacter) {
+            recordMissingSpaces(update);
 
-        commitCorrect(currentPosition, update);
-
-        currentPosition++;
-
-        return;
-    }
-
-    /*
-     * CASE 2: maybe they skipped target characters.
-     */
-    int matchPosition = findLookaheadMatch(typCharacter);
-
-    if (matchPosition != -1) {
-
-        for (int position = currentPosition; position < matchPosition; position++) {
-
-            recordMissingCharacter(position, update);
+            if (currentPosition >= targetText.length()) {
+                return;
+            }
         }
 
-        commitCorrect(matchPosition, update);
+        char expectedCharacter =
+            targetText.charAt(currentPosition);
 
-        currentPosition = matchPosition + 1;
+        /*
+        * CASE 1: exact match.
+        */
+        if (typCharacter == expectedCharacter) {
 
-        currentWordHasErrors = true;
+            commitCorrect(currentPosition, update);
 
-        return;
+            currentPosition++;
+
+            return;
+        }
+
+        /*
+        * CASE 2: maybe they skipped target characters.
+        */
+        int matchPosition = findLookaheadMatch(typCharacter);
+
+        if (matchPosition != -1) {
+
+            for (int position = currentPosition; position < matchPosition; position++) {
+
+                recordMissingCharacter(position, update);
+            }
+
+            commitCorrect(matchPosition, update);
+
+            currentPosition = matchPosition + 1;
+
+            currentWordHasErrors = true;
+
+            return;
+        }
+
+        /*
+        * CASE 3:
+        * We don't know yet if this character is
+        * WRONG or EXTRA.
+        */
+
+        update.addIncorrect(currentPosition);
+        pendingTargetPosition = currentPosition;
+
+        pendingInput.add(typCharacter);
     }
-
-    /*
-     * CASE 3:
-     * We don't know yet if this character is
-     * WRONG or EXTRA.
-     */
-
-    update.addIncorrect(currentPosition);
-    pendingTargetPosition = currentPosition;
-
-    pendingInput.add(typCharacter);
-}
     public TypingUpdate handleTypedCharacter(char typCharacter) {
 
 

@@ -17,8 +17,9 @@ public class TypingGameFrame extends JFrame {
     private TextFileManager textFileManager;
     private String loadedText;
     private RandomWordGenerator initialGenerator;
+    private HistoryFileManager historyFileManager;
     private Timer typingTimer;
-    private int elapsedSeconds = 0;
+    private int secondsLeft = 60;
     private JLabel timerLabel;
     private JLabel wpmLabel;
 
@@ -43,19 +44,34 @@ public class TypingGameFrame extends JFrame {
          */
         typingPanel = new TypingPanel(this);
         textFileManager = new TextFileManager();
+        historyFileManager = new HistoryFileManager();
 
         initialGenerator = new RandomWordGenerator("typinggame/wordsPool");
         loadedText = initialGenerator.generateRandomText(400);
         startNewSession(loadedText);
 
-        timerLabel = new JLabel("Time: 0s");
+        timerLabel = new JLabel("60s");
         wpmLabel = new JLabel("WPM: 0");
 
         typingTimer = new Timer(1000, e -> {
-            elapsedSeconds++;
-            timerLabel.setText("Time: " + elapsedSeconds + "s");
-            int currentWpm = typingPanel.session.calculateWPM(elapsedSeconds);
-            wpmLabel.setText("WPM: " + currentWpm);
+            if (secondsLeft > 0) {
+                secondsLeft--;
+                timerLabel.setText(secondsLeft + "s");
+
+                int elapsed = 60 - secondsLeft;
+                if (elapsed > 0) {
+                    int currentWpm = typingPanel.session.calculateWPM(elapsed);
+                    wpmLabel.setText("WPM: " + currentWpm);
+                }
+
+                if (secondsLeft <= 0) {
+                    typingTimer.stop();
+                    typingPanel.setEnabled(false);
+
+                    History newHistory = new History(typingPanel.session);
+                    historyFileManager.saveHistory(newHistory);
+                }
+            }
         });
 
         /*
@@ -131,7 +147,7 @@ public class TypingGameFrame extends JFrame {
 
                     return;
                 }
-                typingPanel.resetSession();;
+                typingPanel.resetSession();
         });
 
         /*
@@ -172,19 +188,20 @@ public class TypingGameFrame extends JFrame {
 
     private void startNewSession(String text) {
         typingPanel.setTargetText(text);
+        typingPanel.setEnabled(true);
 
         if(typingTimer != null) {
             if (typingTimer.isRunning()) {
                 typingTimer.stop();
             }
-            elapsedSeconds = 0;
-            timerLabel.setText("Time: 0s");
+            secondsLeft = 60;
+            timerLabel.setText("60s");
             wpmLabel.setText("WPM: 0");
         }
     }
 
     public void startTimerIfNeeded() {
-        if (typingTimer != null && !typingTimer.isRunning()) {
+        if (typingTimer != null && !typingTimer.isRunning() && secondsLeft > 0) {
             typingTimer.start();
         }
     }
@@ -192,8 +209,9 @@ public class TypingGameFrame extends JFrame {
         if (typingTimer != null) {
             typingTimer.stop();
         }
-        elapsedSeconds = 0;
-        timerLabel.setText("Time: 0s");
+        secondsLeft = 60;
+        timerLabel.setText("60s");
         wpmLabel.setText("WPM: 0");
+        typingPanel.setEnabled(true);
     }
 }
