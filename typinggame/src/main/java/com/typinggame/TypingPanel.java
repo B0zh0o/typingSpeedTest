@@ -245,6 +245,7 @@ public class TypingPanel extends JPanel {
 
         StyleConstants.setForeground(style, new Color(100, 100, 100));
         StyleConstants.setBold(style, false);
+        StyleConstants.setUnderline(style, false);
 
         document.setCharacterAttributes(position, 1, style, true);
     }
@@ -261,8 +262,10 @@ public class TypingPanel extends JPanel {
     }
 
     public void setTargetText(String targetText) {
-        session = new TypingSession(targetText);
-        textPane.setText(targetText);
+
+        String normalizedText = targetText.replace("r\n", "\n").replace("\r", "\n");
+        session = new TypingSession(normalizedText);
+        textPane.setText(normalizedText);
         makeTargetTextFaded();
         setUnderline(session.getCurrentPosition(), true);
 

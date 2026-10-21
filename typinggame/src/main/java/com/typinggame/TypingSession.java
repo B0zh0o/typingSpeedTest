@@ -22,12 +22,10 @@ public class TypingSession {
 
     public int wpm;
 
-    private static final int LOOKAHEAD_LIMIT = 4;
-    private static final int PENDING_LIMIT = 3;
+    private static final int LOOKAHEAD_LIMIT = 1;
     private final ErrorTracker errorTracker;
     private final Set<Integer> activeCorrectPositions;
-    private final List<Character> pendingInput;
-    private int pendingTargetPosition;
+
 
     public TypingSession(String targetText) {
         this.targetText = targetText;
@@ -40,8 +38,6 @@ public class TypingSession {
         this.wpm = 0;
         this.errorTracker = new ErrorTracker();
         this.activeCorrectPositions = new HashSet<>();
-        this.pendingInput = new ArrayList<>();
-        this.pendingTargetPosition = -1;
     }
 
     private int findWordSpace(int position) {
@@ -125,148 +121,66 @@ public class TypingSession {
         return -1;
     }
 
-    private void resolvePendingFallback(TypingUpdate update) {
-        int targetPosition = pendingTargetPosition;
-        char firstCharacter = pendingInput.get(0);
-
-        List<Character> remaining = new ArrayList<>(pendingInput.subList(1, pendingInput.size()));
-
-        pendingInput.clear();
-        pendingTargetPosition = -1;
-
-        recordWrongCharacter(targetPosition, firstCharacter, update);
-        currentPosition = targetPosition + 1;
-        currentWordHasErrors = true;
-
-        for(char character : remaining) {
-            if (pendingInput.isEmpty()) {
-                processCharacter(character, update);
-            } else {
-                resolvePendingWith(character, update);
-            }
-        }
-    }
-
-    private void resolvePendingWith(char typCharacter, TypingUpdate update) {
-        int targetPosition = pendingTargetPosition;
-
-        char expectedCharacter = targetText.charAt(targetPosition);
-
-        /*
-        * Extra character: 
-        * target = cat
-        * user typed = caxt
-         */
-        if (typCharacter == expectedCharacter) {
-            for(char extra : pendingInput) {
-                recordExtraCharacter(targetPosition, extra);
-            }
-
-            pendingInput.clear();
-            pendingTargetPosition = -1;
-            update.addReset(targetPosition);
-            
-            commitCorrect(targetPosition, update);
-            currentPosition = targetPosition + 1;
-            currentWordHasErrors = true;
-            
-            return;
-        }
-
-        /*
-        * Wrong
-        * target = cat
-        * typed = cot
-         */
-        if(pendingInput.size() == 1 && targetPosition + 1 < targetText.length() 
-            && !Character.isWhitespace(targetText.charAt(targetPosition + 1)) 
-            && typCharacter == targetText.charAt(targetPosition + 1)) {
-                char wrongCharacter = pendingInput.get(0);
-                recordWrongCharacter(targetPosition, wrongCharacter, update);
-
-                pendingInput.clear();
-                pendingTargetPosition = -1;
-                commitCorrect(targetPosition + 1, update);
-                currentPosition = targetPosition + 2;
-                currentWordHasErrors = true;
-                return;
-            }
-        
-        /*
-        * Unsure
-         */
-        pendingInput.add(typCharacter);
-        if (pendingInput.size() >= PENDING_LIMIT) {
-            resolvePendingFallback(update);
-        }
-    }
-
     private void processCharacter(char typCharacter,TypingUpdate update) {
 
-    if (currentPosition >= targetText.length()) {
-        recordExtraCharacter(currentPosition, typCharacter);
-        return;
-    }
-
-    /*
-     * Target expects a space, but user continued typing.
-     */
-    if (Character.isWhitespace(targetText.charAt(currentPosition))) {
-
-        recordMissingSpaces(update);
-
         if (currentPosition >= targetText.length()) {
+            recordExtraCharacter(currentPosition, typCharacter);
             return;
         }
-    }
 
-    char expectedCharacter =
-        targetText.charAt(currentPosition);
+        /*
+         * Target expects a space, but user continued typing.
+         */
+        if (Character.isWhitespace(targetText.charAt(currentPosition))) {
 
-    /*
-     * CASE 1: exact match.
-     */
-    if (typCharacter == expectedCharacter) {
+            recordMissingSpaces(update);
 
-        commitCorrect(currentPosition, update);
-
-        currentPosition++;
-
-        return;
-    }
-
-    /*
-     * CASE 2: maybe they skipped target characters.
-     */
-    int matchPosition = findLookaheadMatch(typCharacter);
-
-    if (matchPosition != -1) {
-
-        for (int position = currentPosition; position < matchPosition; position++) {
-
-            recordMissingCharacter(position, update);
+            if (currentPosition >= targetText.length()) {
+                return;
+            }
         }
 
-        commitCorrect(matchPosition, update);
+        char expectedCharacter = targetText.charAt(currentPosition);
 
-        currentPosition = matchPosition + 1;
+        /*
+        * CASE 1: exact match.
+         */
+        if (typCharacter == expectedCharacter) {
 
+            commitCorrect(currentPosition, update);
+
+            currentPosition++;
+
+            return;
+        }
+
+        /*
+         * CASE 2: maybe they skipped target characters.
+         */
+        int nextPosition = currentPosition + 1;
+
+        if (!currentWordHasErrors && nextPosition < targetText.length() && !Character.isWhitespace(targetText.charAt(nextPosition)) && typCharacter == targetText.charAt(nextPosition)) {
+            recordMissingCharacter(currentPosition, update);
+
+            commitCorrect(nextPosition, update);
+            currentPosition = nextPosition + 1;
+            currentWordHasErrors = true;
+            return;
+        }
+
+    
+        /*
+         * CASE 3:
+         * We don't know yet if this character is
+         * WRONG or EXTRA.
+         */
+        recordWrongCharacter(currentPosition, typCharacter, update);
         currentWordHasErrors = true;
+        currentPosition++;
 
-        return;
     }
 
-    /*
-     * CASE 3:
-     * We don't know yet if this character is
-     * WRONG or EXTRA.
-     */
 
-    update.addIncorrect(currentPosition);
-    pendingTargetPosition = currentPosition;
-
-    pendingInput.add(typCharacter);
-}
     public TypingUpdate handleTypedCharacter(char typCharacter) {
 
 
@@ -279,11 +193,7 @@ public class TypingSession {
         spaceJustHandled = false;
         hasTypedInCurrentWord = true;
 
-        if (!pendingInput.isEmpty()) {
-            resolvePendingWith(typCharacter, update);
-        } else {
-            processCharacter(typCharacter, update);
-        }
+        processCharacter(typCharacter, update);
 
         return update;
     }
@@ -292,141 +202,35 @@ public class TypingSession {
     public TypingUpdate handleBackspace() {
         TypingUpdate update = new TypingUpdate();
 
-        /*
-         * CASE 1:
-         * There is an unresolved character in the pending buffer
-         *
-         * target: cat
-         * typed:  cax
-         *
-         * x has not yet been classified as WRONG_CHARACTER or EXTRA_CHARACTER.
-         * Backspace only removes x from buffer.
-         */
-        if (!pendingInput.isEmpty()) {
-
-            pendingInput.remove(pendingInput.size() - 1);
-
-            if (pendingInput.isEmpty()) {
-                pendingTargetPosition = -1;
-            }
-
-            update.setIgnored(true);
-
-            return update;
-        }
-
-        /*
-         * CASE 2:
-         * We are already at the beginning of the text
-         * or at a boundary we are not allowed to cross.
-         */
         if (currentPosition <= 0 || currentPosition <= lockedBoundary) {
-
             update.setIgnored(true);
             return update;
         }
 
         int oldPosition = currentPosition;
 
-        /*
-         * CASE 3:
-         * We previously skipped part of a word by pressing Space
-         *
-         * Example:
-         *
-         * target: Hello World
-         * typed:  He[SPACE]
-         *
-         * lastActivePosition = 2
-         * currentPosition = 6
-         *
-         * Pressing Backspace should jump back to position 2
-         * instead of only moving from 6 to 5.
-         */
-        if (currentPosition == currentWordStart && lastActivePosition < currentPosition
-             && lastActivePosition >= lockedBoundary) {
-
+        if (currentPosition == currentWordStart && lastActivePosition < currentPosition && lastActivePosition >= lockedBoundary) {
             currentPosition = lastActivePosition;
-
         } else {
-
-            /*
-             * Normal Backspace:
-             */
             currentPosition--;
         }
 
-        /*
-         * Remove all current corrects that we moved backwards from
-         *
-         * Also tell TypingPanel that these characters
-         * should return to their normal faded appearance
-         */
-        for (int position = currentPosition; position < oldPosition; position++) {
-
+        for(int position = currentPosition; position < oldPosition; position++) {
             activeCorrectPositions.remove(position);
-
             update.addReset(position);
         }
 
-        /*
-         * Do NOT delete old errors.
-         *
-         * Instead mark them as corrected so that they stop effecting live accuracy, and exist in the final error report
-         */
         errorTracker.markCorrectedInRange(currentPosition, oldPosition);
 
-        /*
-         * recalculate the start/end of the current word.
-         */
         refreshCurrentWordBounds();
 
-        /*
-         * Recalculate whether the current word still contains any uncorrected errors.
-         */
-        currentWordHasErrors =
-            errorTracker.getErrors().stream().anyMatch(error ->
-                !error.isCorrected()
-                && error.getPosition() >= currentWordStart
-                && error.getPosition() < currentWordEnd);
+        currentWordHasErrors = errorTracker.getErrors().stream().anyMatch(error -> !error.isCorrected() && error.getPosition() >= currentWordStart
+        && error.getPosition() < currentWordEnd);
 
-        /*
-         * Work out whether anything is still actively typed
-         * inside the current word.
-         */
-        hasTypedInCurrentWord =
-            activeCorrectPositions.stream().anyMatch(position ->
-                position >= currentWordStart
-                && position < currentWordEnd) || currentWordHasErrors;
+        hasTypedInCurrentWord = activeCorrectPositions.stream().anyMatch(position -> position >= currentWordStart && position < currentWordEnd) || currentWordHasErrors;
 
-        /*
-         * The user has interacted again, so a previous Space
-         * should no longer block another Space press.
-         */
         spaceJustHandled = false;
-
-        return update;  
-    }
-
-
-    private void flushBuffer(TypingUpdate update) {
-        if(pendingInput.isEmpty()) {
-            return;
-        }
-
-        int position = pendingTargetPosition;
-
-        char first = pendingInput.get(0);
-
-        recordWrongCharacter(position, first, update);
-
-        for (int i = 1; i < pendingInput.size(); i++) {
-            recordExtraCharacter(position, pendingInput.get(i));
-        }
-
-        currentPosition = position + 1;
-        pendingInput.clear();
-        pendingTargetPosition = -1;
+        return update;
     }
 
     public TypingUpdate  handleSpace() {
@@ -437,8 +241,6 @@ public class TypingSession {
             return update;
         }
 
-
-        flushBuffer(update);
 
         int oldWordEnd = findWordSpace(currentPosition);
         currentWordEnd = oldWordEnd;
