@@ -1,9 +1,6 @@
 package com.typinggame;
 
-
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 
@@ -22,7 +19,6 @@ public class TypingSession {
 
     public int wpm;
 
-    private static final int LOOKAHEAD_LIMIT = 1;
     private final ErrorTracker errorTracker;
     private final Set<Integer> activeCorrectPositions;
 
@@ -103,24 +99,6 @@ public class TypingSession {
         currentWordEnd = findWordSpace(currentPosition);
     }
 
-    private int findLookaheadMatch(char typCharacter) {
-        int end = Math.min(targetText.length(), currentPosition + LOOKAHEAD_LIMIT + 1);
-
-        for(int position = currentPosition + 1; position < end; position++) {
-            char targetCharacter = targetText.charAt(position);
-
-            if (Character.isWhitespace(targetCharacter)) {
-                break;
-            }
-
-            if (targetCharacter == typCharacter) {
-                return position;
-            }
-        }
-
-        return -1;
-    }
-
     private void processCharacter(char typCharacter,TypingUpdate update) {
 
         if (currentPosition >= targetText.length()) {
@@ -168,12 +146,6 @@ public class TypingSession {
             return;
         }
 
-    
-        /*
-         * CASE 3:
-         * We don't know yet if this character is
-         * WRONG or EXTRA.
-         */
         recordWrongCharacter(currentPosition, typCharacter, update);
         currentWordHasErrors = true;
         currentPosition++;
@@ -240,6 +212,7 @@ public class TypingSession {
             update.setIgnored(true);
             return update;
         }
+
 
 
         int oldWordEnd = findWordSpace(currentPosition);
