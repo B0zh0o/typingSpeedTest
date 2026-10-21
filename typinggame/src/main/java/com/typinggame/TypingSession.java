@@ -5,6 +5,7 @@ import java.util.Stack;
 
 public class TypingSession {
     
+    public int id;
     private String targetText; 
     private int currentPosition;
     private int currentWordEnd;
@@ -41,7 +42,7 @@ public class TypingSession {
             spacePosition++;
             }
         return spacePosition;
-    } 
+    }
 
     private void refreshCurrentWordBounds() {
         int start = currentPosition;
