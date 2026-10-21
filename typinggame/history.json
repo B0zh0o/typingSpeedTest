@@ -1,0 +1,11 @@
+[
+  {
+    "id": 1,
+    "sessionId": 0,
+    "sessionWpm": 38,
+    "wrongCharacterErrorCount": 1,
+    "missingCharacterErrorCount": 6,
+    "extraCharacterErrorCount": 0,
+    "missingSpaceErrorCount": 0
+  }
+]

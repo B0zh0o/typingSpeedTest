@@ -2,6 +2,10 @@ package com.typinggame;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
+import java.io.FileReader;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -16,7 +20,7 @@ public class HistoryFileManager {
     }
 
     public void saveHistory(History newHistory) {
-        List<History> historyList = loadAllHistries();
+        List<History> historyList = loadAllHistories();
         historyList.add(newHistory);
 
         try (FileWriter writer = new FileWriter(FILE_NAME)) {
@@ -27,7 +31,7 @@ public class HistoryFileManager {
     }
 
     public List<History> loadAllHistories() {
-        try (fileReader reader = new fileReader(FILE_NAME)) {
+        try (FileReader reader = new FileReader(FILE_NAME)) {
             Type listType = new TypeToken<ArrayList<History>>() {}.getType();
             List<History> histories = gson.fromJson(reader, listType);
             return histories != null ? histories : new ArrayList<>();
