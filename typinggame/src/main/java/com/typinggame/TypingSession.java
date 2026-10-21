@@ -19,6 +19,7 @@ public class TypingSession {
 
     public int wpm;
 
+    private Resynch resynch;
     private final ErrorTracker errorTracker;
     private final Set<Integer> activeCorrectPositions;
 
@@ -34,6 +35,8 @@ public class TypingSession {
         this.wpm = 0;
         this.errorTracker = new ErrorTracker();
         this.activeCorrectPositions = new HashSet<>();
+        this.resynch = null;
+        
     }
 
     private int findWordSpace(int position) {
@@ -72,16 +75,6 @@ public class TypingSession {
         update.addCorrect(position);
     }
 
-    private void recordExtraCharacter(int position, char typCharacter) {
-        Character expected = null; 
-        if (position < targetText.length()) {
-            expected = targetText.charAt(position);
-        }
-
-        errorTracker.record(ErrorType.EXTRA_CHARACTER, position, expected, typCharacter);
-
-        currentWordHasErrors = true;
-    }
 
     private void recordMissingSpaces(TypingUpdate update) {
         
@@ -99,10 +92,45 @@ public class TypingSession {
         currentWordEnd = findWordSpace(currentPosition);
     }
 
+    private boolean tryResynch(char typCharacter) {
+        /*
+        * No previous char to cause offset.
+         */
+        if (resynch == null) {
+            return false;
+        }
+
+        /*
+        * New key does not match what previous expected.
+        * No resynch needed.
+        * 
+         */
+        if(typCharacter != resynch.getExpectedCharacter()) {
+            resynch = null;
+            return false;
+        }
+
+        /* Repeated letter protection.
+        *
+         */
+        if(currentPosition < targetText.length() && typCharacter == targetText.charAt(currentPosition)) {
+            resynch = null;
+            return false;
+        }
+
+        /*
+        * Character matches what the previous was expected to be, but not what the current position expects.
+        * This key is used to restore alignment.
+        * Previous error stays red, WRONG_CHARACTER is recorded, current position does not move
+        * 
+         */
+        resynch = null;
+        return true;
+    }
+
     private void processCharacter(char typCharacter,TypingUpdate update) {
 
         if (currentPosition >= targetText.length()) {
-            recordExtraCharacter(currentPosition, typCharacter);
             return;
         }
 
@@ -129,11 +157,13 @@ public class TypingSession {
 
             currentPosition++;
 
+            resynch = null;
+
             return;
         }
 
         /*
-         * CASE 2: maybe they skipped target characters.
+         * CASE 2: maybe they skipped exactly one target character.
          */
         int nextPosition = currentPosition + 1;
 
@@ -143,10 +173,15 @@ public class TypingSession {
             commitCorrect(nextPosition, update);
             currentPosition = nextPosition + 1;
             currentWordHasErrors = true;
+            resynch = null;
             return;
         }
 
-        recordWrongCharacter(currentPosition, typCharacter, update);
+
+        int wrongPosition = currentPosition;
+        recordWrongCharacter(wrongPosition, typCharacter, update);
+
+        resynch = new Resynch(wrongPosition, expectedCharacter);
         currentWordHasErrors = true;
         currentPosition++;
 
@@ -165,6 +200,10 @@ public class TypingSession {
         spaceJustHandled = false;
         hasTypedInCurrentWord = true;
 
+        if(tryResynch(typCharacter)) {
+            return update;
+        }
+
         processCharacter(typCharacter, update);
 
         return update;
@@ -173,6 +212,8 @@ public class TypingSession {
 
     public TypingUpdate handleBackspace() {
         TypingUpdate update = new TypingUpdate();
+
+        resynch = null;
 
         if (currentPosition <= 0 || currentPosition <= lockedBoundary) {
             update.setIgnored(true);
@@ -213,7 +254,7 @@ public class TypingSession {
             return update;
         }
 
-
+        resynch = null;
 
         int oldWordEnd = findWordSpace(currentPosition);
         currentWordEnd = oldWordEnd;

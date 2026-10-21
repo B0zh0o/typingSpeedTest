@@ -69,7 +69,7 @@ public class TypingGameFrame extends JFrame {
                     typingPanel.setEnabled(false);
 
                     History newHistory = new History(typingPanel.session);
-                    historyFileManager.saveHistory(newHistory);
+                    historyFileManager.saveHistory(newHistory);  
                 }
             }
         });

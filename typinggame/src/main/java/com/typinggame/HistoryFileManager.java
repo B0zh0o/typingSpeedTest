@@ -1,3 +1,5 @@
+
+
 package com.typinggame;
 
 import java.io.FileWriter;
@@ -36,3 +38,4 @@ public class HistoryFileManager {
         }
     }
 }
+
