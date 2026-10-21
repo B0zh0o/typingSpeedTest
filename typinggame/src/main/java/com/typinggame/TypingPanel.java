@@ -103,94 +103,98 @@ public class TypingPanel extends JPanel {
          */
         addKeyListener(new KeyAdapter() {
 
-            @Override
-            public void keyTyped(KeyEvent e) {
-                if (parentFrame != null) {
-                    parentFrame.startTimerIfNeeded();
-                }
+        @Override
+        public void keyTyped(KeyEvent e) {
 
-                char typedCharacter = e.getKeyChar();
+            char typedCharacter = e.getKeyChar();
 
-                if(typedCharacter == '\b') {
-                    return;
-                }
-                if(Character.isWhitespace(typedCharacter)) {
-                    int oldPosition = session.getCurrentPosition();
+            /*
+            * Backspace is handled in keyPressed().
+             */
+            if (typedCharacter == '\b') {
+                return;
+            }
 
-                    setUnderline(oldPosition, false);
-                    
-                    handleSpaceVisually();
+            /*
+             * Ignore tabs/newlines.
+             * A normal Space is still allowed.
+             */
+            if (Character.isWhitespace(typedCharacter) && typedCharacter != ' ') {
+                return;
+            }
 
-                    setUnderline(session.getCurrentPosition(), true);
-                    return;
-                }
+            /*
+             * Don't allow more typing after the test
+             * is completely finished.
+             */
+            if (session.isFinished()) {
+                return;
+            }
 
-                /*
-                 * Ignore typing once we have reached the
-                 * end of the target text.
-                 */
-                if (session.isFinished()) {
-                    return;
-                }
+            if (parentFrame != null) {
+                parentFrame.startTimerIfNeeded();
+            }
+
+            int oldPosition =
+                session.getCurrentPosition();
+
+            setUnderline(oldPosition, false);
+
+            TypingUpdate update = session.handleTypedCharacter(typedCharacter);
+
+            applyTypingUpdate(update);
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+
+            if (e.getKeyCode()== KeyEvent.VK_BACK_SPACE) {
 
                 int oldPosition = session.getCurrentPosition();
 
                 setUnderline(oldPosition, false);
 
-                boolean correct = session.handleCharacter(typedCharacter);
+                TypingUpdate update = session.handleBackspace();
 
-                if (correct) {
-                    markCorrect(oldPosition);
-                } else {
-                    markIncorrect(oldPosition);
-                }
-
-                setUnderline(session.getCurrentPosition(), true);
+                applyTypingUpdate(update);
             }
+        }
+    });
 
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (parentFrame != null) {
-                    parentFrame.startTimerIfNeeded();
-                }
-                /*
-                 * Simple Backspace support. DOESNT WORK
-                 */
-                if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
-                    int oldPosition = session.getCurrentPosition();
 
-                    setUnderline(oldPosition, false);
-                    
-                    int position = session.handleBackspace();
-
-                    if (position != -1) {
-                        markTargetCharacter(position);
-
-                        setUnderline(session.getCurrentPosition(), true);
-                    }
-                }
-            }
-        });
     }
 
-    private void handleSpaceVisually() {
 
-        int start = session.getCurrentPosition();
+    private void applyTypingUpdate(TypingUpdate update) {
 
-        int oldWordEnd = session.handleSpace();
-
-        if (oldWordEnd == -1) {
-            return;
+        /*
+         * Backspace has undone these positions
+         */
+        for (int position : update.getResetPositions()) {
+                markTargetCharacter(position);
         }
 
-        for (int i = start; i < oldWordEnd; i++) {
-            markTargetCharacter(i);
+        /*
+         * These positions became errors
+         */
+        for (int position : update.getIncorrectPositions()) {
+            markIncorrect(position);
         }
 
-        if (oldWordEnd < session.getTargetText().length()) {
-            markCorrect(oldWordEnd);
+        /*
+         * These positions were correct
+         */
+        for (int position : update.getCorrectPositions()) {
+            markCorrect(position);
         }
+
+        /*
+         * Put the underline underneath the new
+         * current target position.
+         */
+        setUnderline(session.getCurrentPosition(), true);
     }
+
 
     /*
      * Makes the entire target text faded.
