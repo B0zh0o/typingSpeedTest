@@ -146,10 +146,16 @@ public class TypingGameFrame extends JFrame {
                         "Empty Text",
                         JOptionPane.WARNING_MESSAGE
                     );
-
                     return;
                 }
-                typingPanel.resetSession();
+                resetTimer();
+        });
+
+        JButton historyButton = new JButton("History");
+
+        historyButton.addActionListener(e -> {
+            HistoryFrame historyFrame = new HistoryFrame(this);
+            historyFrame.setVisible(true);
         });
 
         /*
@@ -176,6 +182,7 @@ public class TypingGameFrame extends JFrame {
         JPanel bottomPanel = new JPanel();
 
         bottomPanel.add(resetButton);
+        bottomPanel.add(historyButton);
 
         add(bottomPanel, BorderLayout.SOUTH);
 
@@ -202,6 +209,13 @@ public class TypingGameFrame extends JFrame {
         }
     }
 
+    public void resumeGameAfterHistory() {
+        if (secondsLeft > 0) {
+            typingPanel.setEnabled(true);
+            typingPanel.requestFocusInWindow();
+        }
+    }
+
     public int getElapsedSeconds() {
         return 60 - secondsLeft;
     }
@@ -221,17 +235,17 @@ public class TypingGameFrame extends JFrame {
         if (typingTimer != null) {
             typingTimer.stop();
         }
+
+        secondsLeft = 60;
+        timerLabel.setText("60s");
+        wpmLabel.setText("WPM: 0");
         
-        if (secondsLeft <= 0) {
+        if (typingPanel.session.getTargetText() == null || typingPanel.session.getTargetText().isBlank()) {
             RandomWordGenerator generator = new RandomWordGenerator("typinggame/wordsPool");
             loadedText = generator.generateRandomText(400);
             startNewSession(loadedText);
         } else {
-            secondsLeft = 60;
-            timerLabel.setText("60s");
-            wpmLabel.setText("WPM: 0");
             typingPanel.resetSession();
-            typingPanel.setEnabled(true);
         }
     }
 

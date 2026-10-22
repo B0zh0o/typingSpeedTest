@@ -1,6 +1,5 @@
 package com.typinggame;
 
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -16,14 +15,13 @@ import java.awt.Font;
 import java.util.List;
 import java.util.Map;
 
-
 public class ResultsFrame extends JDialog{
 
     public ResultsFrame(JFrame parent, int wpm, int rawWpm, int accuracy, List<Map.Entry<Character, Long>> top5) {
 
         super(parent, "Session Results", true);
 
-        setSize(500, 450);
+        setSize(500, 650);
         setLocationRelativeTo(parent);
 
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

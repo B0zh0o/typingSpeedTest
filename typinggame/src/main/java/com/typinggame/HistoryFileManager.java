@@ -21,6 +21,11 @@ public class HistoryFileManager {
 
     public void saveHistory(History newHistory) {
         List<History> historyList = loadAllHistories();
+
+        int nextId = historyList.size() + 1;
+        newHistory.id = nextId;
+        newHistory.sessionId = nextId;
+
         historyList.add(newHistory);
 
         try (FileWriter writer = new FileWriter(FILE_NAME)) {
