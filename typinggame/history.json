@@ -7,5 +7,14 @@
     "missingCharacterErrorCount": 6,
     "extraCharacterErrorCount": 0,
     "missingSpaceErrorCount": 0
+  },
+  {
+    "id": 1,
+    "sessionId": 1,
+    "sessionWpm": 33,
+    "wrongCharacterErrorCount": 11,
+    "missingCharacterErrorCount": 4,
+    "extraCharacterErrorCount": 0,
+    "missingSpaceErrorCount": 0
   }
 ]
