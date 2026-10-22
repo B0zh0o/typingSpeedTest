@@ -94,5 +94,13 @@
     "wrongCharacterErrorCount": 9,
     "missingCharacterErrorCount": 7,
     "missingSpaceErrorCount": 1
+  },
+  {
+    "id": 1,
+    "sessionId": 1,
+    "sessionWpm": 63,
+    "wrongCharacterErrorCount": 10,
+    "missingCharacterErrorCount": 9,
+    "missingSpaceErrorCount": 0
   }
 ]

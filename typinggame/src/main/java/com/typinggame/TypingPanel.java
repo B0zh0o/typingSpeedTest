@@ -8,6 +8,8 @@ import javax.swing.JTextPane;
 import javax.swing.JScrollPane;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
+import java.util.List;
+import java.util.Map;
 
 
 import javax.swing.text.SimpleAttributeSet;
@@ -28,6 +30,7 @@ import java.awt.Graphics;
 import java.awt.Shape;
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
+import com.typinggame.TypingGameFrame; 
 
 public class TypingPanel extends JPanel {
 
@@ -36,6 +39,7 @@ public class TypingPanel extends JPanel {
     public TypingSession session;
     private TypingGameFrame parentFrame;
     private int lastVisualLineY = -1;
+    private boolean resultsShown = false;
 
     public TypingPanel(TypingGameFrame parentFrame) {
 
@@ -261,6 +265,12 @@ public class TypingPanel extends JPanel {
          */
         setUnderline(session.getCurrentPosition(), true);
         scrollWhenLineChanges();
+
+        if (session.isFinished() && !resultsShown) {
+            resultsShown = true;
+
+            showResults();
+        }
     }
 
 
@@ -330,6 +340,9 @@ public class TypingPanel extends JPanel {
     public void setTargetText(String targetText) {
         String normalizedText = targetText.replace("\r\n", "\n").replace("\r", "\n").replaceAll(" +\n", "\n");
         session = new TypingSession(normalizedText);
+
+        resultsShown = false;
+
         textPane.setText(normalizedText);
         makeTargetTextFaded();
         setUnderline(session.getCurrentPosition(), true);
@@ -349,6 +362,9 @@ public class TypingPanel extends JPanel {
     public void resetSession() {
         String currentText = session.getTargetText();
         session = new TypingSession(currentText);
+
+        resultsShown = false;
+
         textPane.setText(currentText);
         textPane.setCaretPosition(0);
         makeTargetTextFaded();
@@ -365,5 +381,23 @@ public class TypingPanel extends JPanel {
         parentFrame.resetTimer();
         
     }
+
+    public void showResults() {
+
+        parentFrame.stopTimer();
+        int elapsedSeconds = parentFrame.getElapsedSeconds();
+
+        if (elapsedSeconds <= 0) {
+            elapsedSeconds = 1;
+        }
+        int wpm = session.calculateWPM(elapsedSeconds);
+        int accuracy = session.calculateAccuracy();
+
+        List<Map.Entry<Character, Long>> top5 = session.getErrorTracker().getTop5MissedCharacters();
+
+        ResultsFrame resultsFrame = new ResultsFrame(parentFrame, wpm, accuracy, top5);
+        resultsFrame.setVisible(true);
+    }
+
 
 }

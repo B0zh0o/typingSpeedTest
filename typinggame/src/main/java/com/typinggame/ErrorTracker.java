@@ -39,4 +39,17 @@ public class ErrorTracker {
     public List<TypingError> getErrors() {
         return List.copyOf(errors);
     }
+
+    public List<Map.Entry<Character, Long>> getTop5MissedCharacters() {
+        return errors.stream()
+        
+        /*
+        * The error filter contains Missing Characters, Missing Space and Wrong Character.
+        * It gets the top 5 most incorrect characters
+         */
+        .filter(error -> error.getExpCharacter() != null)
+        .collect(Collectors.groupingBy(TypingError::getExpCharacter, Collectors.counting())).entrySet().stream()
+        
+        .sorted(Map.Entry.<Character, Long>comparingByValue().reversed()).limit(5).toList();
+    }
 }
