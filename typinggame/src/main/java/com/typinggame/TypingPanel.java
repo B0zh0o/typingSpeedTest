@@ -261,8 +261,9 @@ public class TypingPanel extends JPanel {
     }
 
     public void setTargetText(String targetText) {
-        session = new TypingSession(targetText);
-        textPane.setText(targetText);
+        String normalizedText = targetText.replace("\r\n", "\n").replace("\r", "\n").replaceAll(" +\n", "\n");
+        session = new TypingSession(normalizedText);
+        textPane.setText(normalizedText);
         makeTargetTextFaded();
         setUnderline(session.getCurrentPosition(), true);
 

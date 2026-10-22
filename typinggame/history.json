@@ -16,5 +16,41 @@
     "missingCharacterErrorCount": 4,
     "extraCharacterErrorCount": 0,
     "missingSpaceErrorCount": 0
+  },
+  {
+    "id": 1,
+    "sessionId": 1,
+    "sessionWpm": 22,
+    "wrongCharacterErrorCount": 5,
+    "missingCharacterErrorCount": 30,
+    "extraCharacterErrorCount": 0,
+    "missingSpaceErrorCount": 0
+  },
+  {
+    "id": 1,
+    "sessionId": 1,
+    "sessionWpm": 4,
+    "wrongCharacterErrorCount": 30,
+    "missingCharacterErrorCount": 5,
+    "extraCharacterErrorCount": 0,
+    "missingSpaceErrorCount": 2
+  },
+  {
+    "id": 1,
+    "sessionId": 1,
+    "sessionWpm": 17,
+    "wrongCharacterErrorCount": 11,
+    "missingCharacterErrorCount": 12,
+    "extraCharacterErrorCount": 0,
+    "missingSpaceErrorCount": 3
+  },
+  {
+    "id": 1,
+    "sessionId": 1,
+    "sessionWpm": 11,
+    "wrongCharacterErrorCount": 24,
+    "missingCharacterErrorCount": 1,
+    "extraCharacterErrorCount": 0,
+    "missingSpaceErrorCount": 5
   }
 ]

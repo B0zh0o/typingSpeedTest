@@ -41,7 +41,7 @@ public class TypingSession {
         this.errorTracker = new ErrorTracker();
         this.activeCorrectPositions = new HashSet<>();
         this.resynch = null;
-	this.errorsList = List.copyOf(errorTracker.errors);
+	    this.errorsList = List.copyOf(errorTracker.errors);
         
     }
 
@@ -175,7 +175,6 @@ public class TypingSession {
 
         if (!currentWordHasErrors && nextPosition < targetText.length() && !Character.isWhitespace(targetText.charAt(nextPosition)) && typCharacter == targetText.charAt(nextPosition)) {
             recordMissingCharacter(currentPosition, update);
-
             commitCorrect(nextPosition, update);
             currentPosition = nextPosition + 1;
             currentWordHasErrors = true;
