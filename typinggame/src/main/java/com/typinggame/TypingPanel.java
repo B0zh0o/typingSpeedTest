@@ -391,11 +391,12 @@ public class TypingPanel extends JPanel {
             elapsedSeconds = 1;
         }
         int wpm = session.calculateWPM(elapsedSeconds);
+        int rawWpm = session.calculateRawWPM(elapsedSeconds);
         int accuracy = session.calculateAccuracy();
 
         List<Map.Entry<Character, Long>> top5 = session.getErrorTracker().getTop5MissedCharacters();
 
-        ResultsFrame resultsFrame = new ResultsFrame(parentFrame, wpm, accuracy, top5);
+        ResultsFrame resultsFrame = new ResultsFrame(parentFrame, wpm, rawWpm, accuracy, top5);
         resultsFrame.setVisible(true);
     }
 

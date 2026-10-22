@@ -21,6 +21,7 @@ public class TypingSession {
     private int lastActivePosition = 0;
 
     public int wpm;
+    public int rawWpm;
 
     private Resynch resynch;
     private final ErrorTracker errorTracker;
@@ -38,6 +39,7 @@ public class TypingSession {
         this.lockedBoundary = 0;
         this.lastActivePosition = 0;
         this.wpm = 0;
+        this.rawWpm = 0;
         this.errorTracker = new ErrorTracker();
         this.activeCorrectPositions = new HashSet<>();
         this.resynch = null;
@@ -195,7 +197,7 @@ public class TypingSession {
 
     public TypingUpdate handleTypedCharacter(char typCharacter) {
 
-
+        rawWpm++;
 
         if (typCharacter == ' ') {
             return handleSpace();
@@ -337,6 +339,18 @@ public class TypingSession {
 
         return wpm;
     } 
+
+    public int calculateRawWPM(int elapsedSeconds) {
+        if(elapsedSeconds <= 0) {
+            return 0;
+        }
+        double minutes = elapsedSeconds / 60.0;
+        rawWpm = (int)((rawWpm / 5.0) / minutes);
+
+        return rawWpm;
+
+        
+    }
 
 
     public int getCurrentPosition() {

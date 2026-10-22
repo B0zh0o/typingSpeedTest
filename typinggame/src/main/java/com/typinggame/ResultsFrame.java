@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class ResultsFrame extends JDialog{
 
-    public ResultsFrame(JFrame parent, int wpm, int accuracy, List<Map.Entry<Character, Long>> top5) {
+    public ResultsFrame(JFrame parent, int wpm, int rawWpm, int accuracy, List<Map.Entry<Character, Long>> top5) {
 
         super(parent, "Session Results", true);
 
@@ -50,6 +50,12 @@ public class ResultsFrame extends JDialog{
         JLabel wpmLabel = new JLabel("WPM: " + wpm );
         styleStatisticLabel(wpmLabel);
         mainPanel.add(wpmLabel);
+
+        mainPanel.add(Box.createVerticalStrut(15));
+
+        JLabel rawwpmLabel = new JLabel("Raw WPM: " + rawWpm);
+        styleStatisticLabel(rawwpmLabel);
+        mainPanel.add(rawwpmLabel);
 
         mainPanel.add(Box.createVerticalStrut(15));
 

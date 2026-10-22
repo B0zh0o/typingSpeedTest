@@ -102,5 +102,29 @@
     "wrongCharacterErrorCount": 10,
     "missingCharacterErrorCount": 9,
     "missingSpaceErrorCount": 0
+  },
+  {
+    "id": 1,
+    "sessionId": 1,
+    "sessionWpm": 0,
+    "wrongCharacterErrorCount": 0,
+    "missingCharacterErrorCount": 0,
+    "missingSpaceErrorCount": 0
+  },
+  {
+    "id": 1,
+    "sessionId": 1,
+    "sessionWpm": 1,
+    "wrongCharacterErrorCount": 0,
+    "missingCharacterErrorCount": 0,
+    "missingSpaceErrorCount": 0
+  },
+  {
+    "id": 1,
+    "sessionId": 1,
+    "sessionWpm": 1,
+    "wrongCharacterErrorCount": 1979,
+    "missingCharacterErrorCount": 0,
+    "missingSpaceErrorCount": 248
   }
 ]
