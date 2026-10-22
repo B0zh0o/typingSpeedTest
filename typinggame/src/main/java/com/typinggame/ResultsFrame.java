@@ -1,6 +1,5 @@
 package com.typinggame;
 
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -15,7 +14,6 @@ import java.awt.Font;
 
 import java.util.List;
 import java.util.Map;
-
 
 public class ResultsFrame extends JDialog{
 
@@ -59,7 +57,7 @@ public class ResultsFrame extends JDialog{
 
         mainPanel.add(Box.createVerticalStrut(15));
 
-        JLabel accuracyLabel = new JLabel("Accuracy: " + accuracy);
+        JLabel accuracyLabel = new JLabel("Accuracy: " + accuracy + "%");
         styleStatisticLabel(accuracyLabel);
         mainPanel.add(accuracyLabel);
 

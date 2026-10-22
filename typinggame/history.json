@@ -3,6 +3,8 @@
     "id": 1,
     "sessionId": 0,
     "sessionWpm": 38,
+    "sessionRawWpm": 0,
+    "accuracy": 0,
     "wrongCharacterErrorCount": 1,
     "missingCharacterErrorCount": 6,
     "missingSpaceErrorCount": 0
@@ -11,6 +13,8 @@
     "id": 1,
     "sessionId": 1,
     "sessionWpm": 33,
+    "sessionRawWpm": 0,
+    "accuracy": 0,
     "wrongCharacterErrorCount": 11,
     "missingCharacterErrorCount": 4,
     "missingSpaceErrorCount": 0
@@ -19,6 +23,8 @@
     "id": 1,
     "sessionId": 1,
     "sessionWpm": 22,
+    "sessionRawWpm": 0,
+    "accuracy": 0,
     "wrongCharacterErrorCount": 5,
     "missingCharacterErrorCount": 30,
     "missingSpaceErrorCount": 0
@@ -27,6 +33,8 @@
     "id": 1,
     "sessionId": 1,
     "sessionWpm": 4,
+    "sessionRawWpm": 0,
+    "accuracy": 0,
     "wrongCharacterErrorCount": 30,
     "missingCharacterErrorCount": 5,
     "missingSpaceErrorCount": 2
@@ -35,6 +43,8 @@
     "id": 1,
     "sessionId": 1,
     "sessionWpm": 17,
+    "sessionRawWpm": 0,
+    "accuracy": 0,
     "wrongCharacterErrorCount": 11,
     "missingCharacterErrorCount": 12,
     "missingSpaceErrorCount": 3
@@ -43,6 +53,8 @@
     "id": 1,
     "sessionId": 1,
     "sessionWpm": 11,
+    "sessionRawWpm": 0,
+    "accuracy": 0,
     "wrongCharacterErrorCount": 24,
     "missingCharacterErrorCount": 1,
     "missingSpaceErrorCount": 5
@@ -51,6 +63,8 @@
     "id": 1,
     "sessionId": 1,
     "sessionWpm": 35,
+    "sessionRawWpm": 0,
+    "accuracy": 0,
     "wrongCharacterErrorCount": 22,
     "missingCharacterErrorCount": 41,
     "missingSpaceErrorCount": 0
@@ -59,6 +73,8 @@
     "id": 1,
     "sessionId": 1,
     "sessionWpm": 1,
+    "sessionRawWpm": 0,
+    "accuracy": 0,
     "wrongCharacterErrorCount": 1,
     "missingCharacterErrorCount": 96,
     "missingSpaceErrorCount": 0
@@ -67,6 +83,8 @@
     "id": 1,
     "sessionId": 1,
     "sessionWpm": 59,
+    "sessionRawWpm": 0,
+    "accuracy": 0,
     "wrongCharacterErrorCount": 9,
     "missingCharacterErrorCount": 4,
     "missingSpaceErrorCount": 0
@@ -75,6 +93,8 @@
     "id": 1,
     "sessionId": 1,
     "sessionWpm": 62,
+    "sessionRawWpm": 0,
+    "accuracy": 0,
     "wrongCharacterErrorCount": 7,
     "missingCharacterErrorCount": 14,
     "missingSpaceErrorCount": 1
@@ -83,6 +103,8 @@
     "id": 1,
     "sessionId": 1,
     "sessionWpm": 25,
+    "sessionRawWpm": 0,
+    "accuracy": 0,
     "wrongCharacterErrorCount": 575,
     "missingCharacterErrorCount": 5,
     "missingSpaceErrorCount": 75
@@ -91,6 +113,8 @@
     "id": 1,
     "sessionId": 1,
     "sessionWpm": 59,
+    "sessionRawWpm": 0,
+    "accuracy": 0,
     "wrongCharacterErrorCount": 9,
     "missingCharacterErrorCount": 7,
     "missingSpaceErrorCount": 1
@@ -99,6 +123,8 @@
     "id": 1,
     "sessionId": 1,
     "sessionWpm": 63,
+    "sessionRawWpm": 0,
+    "accuracy": 0,
     "wrongCharacterErrorCount": 10,
     "missingCharacterErrorCount": 9,
     "missingSpaceErrorCount": 0
@@ -107,6 +133,8 @@
     "id": 1,
     "sessionId": 1,
     "sessionWpm": 0,
+    "sessionRawWpm": 0,
+    "accuracy": 0,
     "wrongCharacterErrorCount": 0,
     "missingCharacterErrorCount": 0,
     "missingSpaceErrorCount": 0
@@ -115,6 +143,8 @@
     "id": 1,
     "sessionId": 1,
     "sessionWpm": 1,
+    "sessionRawWpm": 0,
+    "accuracy": 0,
     "wrongCharacterErrorCount": 0,
     "missingCharacterErrorCount": 0,
     "missingSpaceErrorCount": 0
@@ -123,6 +153,8 @@
     "id": 1,
     "sessionId": 1,
     "sessionWpm": 1,
+    "sessionRawWpm": 0,
+    "accuracy": 0,
     "wrongCharacterErrorCount": 1979,
     "missingCharacterErrorCount": 0,
     "missingSpaceErrorCount": 248
@@ -131,8 +163,86 @@
     "id": 1,
     "sessionId": 1,
     "sessionWpm": 43,
+    "sessionRawWpm": 0,
+    "accuracy": 0,
     "wrongCharacterErrorCount": 6,
     "missingCharacterErrorCount": 0,
     "missingSpaceErrorCount": 0
+  },
+  {
+    "id": 18,
+    "sessionId": 18,
+    "sessionWpm": 31,
+    "sessionRawWpm": 32,
+    "accuracy": 100,
+    "wrongCharacterErrorCount": 0,
+    "missingCharacterErrorCount": 3,
+    "missingSpaceErrorCount": 0,
+    "top5MissedCharacters": [
+      {
+        "character": "t",
+        "count": 1
+      },
+      {
+        "character": "u",
+        "count": 1
+      },
+      {
+        "character": "h",
+        "count": 1
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "sessionId": 19,
+    "sessionWpm": 9,
+    "sessionRawWpm": 9,
+    "accuracy": 98,
+    "wrongCharacterErrorCount": 2,
+    "missingCharacterErrorCount": 0,
+    "missingSpaceErrorCount": 0,
+    "top5MissedCharacters": [
+      {
+        "character": "p",
+        "count": 1
+      },
+      {
+        "character": "r",
+        "count": 1
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "sessionId": 20,
+    "sessionWpm": 35,
+    "sessionRawWpm": 37,
+    "accuracy": 87,
+    "wrongCharacterErrorCount": 4,
+    "missingCharacterErrorCount": 6,
+    "missingSpaceErrorCount": 20,
+    "top5MissedCharacters": [
+      {
+        "character": " ",
+        "count": 20
+      },
+      {
+        "character": "r",
+        "count": 2
+      },
+      {
+        "character": "n",
+        "count": 2
+      },
+      {
+        "character": "a",
+        "count": 1
+      },
+      {
+        "character": "e",
+        "count": 1
+      }
+    ]
   }
 ]

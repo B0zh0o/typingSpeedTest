@@ -30,7 +30,6 @@ public class TypingSession {
 
 
     public TypingSession(String targetText) {
-        this.id++;
         this.targetText = targetText;
         this.currentPosition = 0;
         this.currentWordEnd = findWordSpace(currentPosition); 
@@ -158,7 +157,7 @@ public class TypingSession {
 
         /*
         * CASE 1: exact match.
-         */
+        */
         if (typCharacter == expectedCharacter) {
 
             commitCorrect(currentPosition, update);
@@ -170,21 +169,10 @@ public class TypingSession {
             return;
         }
 
+
         /*
-         * CASE 2: maybe they skipped exactly one target character.
-         */
-        int nextPosition = currentPosition + 1;
-
-        if (!currentWordHasErrors && nextPosition < targetText.length() && !Character.isWhitespace(targetText.charAt(nextPosition)) && typCharacter == targetText.charAt(nextPosition)) {
-            recordMissingCharacter(currentPosition, update);
-            commitCorrect(nextPosition, update);
-            currentPosition = nextPosition + 1;
-            currentWordHasErrors = true;
-            resynch = null;
-            return;
-        }
-
-
+        * Wrong character.
+        */
         int wrongPosition = currentPosition;
         recordWrongCharacter(wrongPosition, typCharacter, update);
 
@@ -266,6 +254,8 @@ public class TypingSession {
         int oldWordEnd = findWordSpace(currentPosition);
         currentWordEnd = oldWordEnd;
 
+        boolean wordCompletedCorrectly = currentPosition == oldWordEnd && !currentWordHasErrors && hasTypedInCurrentWord;
+
         lastActivePosition = currentPosition;
 
         for (int position = currentPosition; position < oldWordEnd; position++) {
@@ -291,6 +281,10 @@ public class TypingSession {
          */
         while (nextPosition < targetText.length() && Character.isWhitespace(targetText.charAt(nextPosition))) {
             nextPosition++;
+        }
+
+        if (wordCompletedCorrectly) {
+            lockedBoundary = nextPosition;
         }
     
 
@@ -345,11 +339,8 @@ public class TypingSession {
             return 0;
         }
         double minutes = elapsedSeconds / 60.0;
-        rawWpm = (int)((rawWpm / 5.0) / minutes);
 
-        return rawWpm;
-
-        
+        return (int)((rawWpm / 5.0) / minutes);
     }
 
 
@@ -373,41 +364,3 @@ public class TypingSession {
         return errorTracker;
     }
 }
-
-
-/*
-    public void timingSessionStarted() {
-        typingTimer.startTimer();
-        
-        while (!(typingTimer.timeLeft <= 0)) {
-            if ((int) lastUserInput >= 65 && (int) lastUserInput <= 122) { //LETTERS
-                wordsArray[currentWordIndex].lastTypedIndex += 1;
-                currentLetterIndex += 1;
-           } else if ((int) lastUserInput == 32) { //SPACE
-                currentWordIndex += 1;
-                currentLetterIndex = 0;
-           } else if ((int) lastUserInput == 8) { //BACK SPACE
-                currentWordIndex -= 1;
-                currentLetterIndex = wordsArray[currentWordIndex].lastTypedIndex;
-           }
-        }
-    }
-
-    //METHODS-----------------------------------------------
-    public String[] splitText(String unsplitString) {
-        String[] splitString = unsplitString.split("//s");
-        return splitString;
-    }
-
-    public Word[] convertIntoWordsArray(String[] splitText) {
-        Word[] wordsArray = new Word[splitText.length];
-        for (int i = 0; i < splitText.length; i++) {
-            wordsArray[i] = new Word(splitText[i]);
-        }
-        return wordsArray;
-    }
-}  
-*/
-
-
-

@@ -378,8 +378,7 @@ public class TypingPanel extends JPanel {
         });
 
         requestFocusInWindow();
-        parentFrame.resetTimer();
-        
+        setEnabled(true);
     }
 
     public void showResults() {
