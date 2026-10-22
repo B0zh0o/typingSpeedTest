@@ -1,8 +1,14 @@
 package com.typinggame;
 
+import java.awt.Point;
+import javax.swing.SwingUtilities;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
+import javax.swing.JScrollPane;
+import java.awt.Dimension;
+import java.awt.GridBagLayout;
+
 
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
@@ -20,13 +26,16 @@ import javax.swing.text.JTextComponent;
 
 import java.awt.Graphics;
 import java.awt.Shape;
+import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 
 public class TypingPanel extends JPanel {
 
     private JTextPane textPane;
+    private JScrollPane scrollPane;
     public TypingSession session;
     private TypingGameFrame parentFrame;
+    private int lastVisualLineY = -1;
 
     public TypingPanel(TypingGameFrame parentFrame) {
 
@@ -56,8 +65,14 @@ public class TypingPanel extends JPanel {
         /*
          * JTextPane lets us style individual characters.
          */
-        textPane = new JTextPane();
+        textPane = new JTextPane() {
 
+
+            @Override 
+            public boolean getScrollableTracksViewportWidth(){
+                return true;
+            }
+        };
         /*
          * Put the entire target text into the text pane.
          */
@@ -82,7 +97,17 @@ public class TypingPanel extends JPanel {
         /*
          * Add the text pane to the middle of the panel.
          */
-        add(textPane, BorderLayout.CENTER);
+        scrollPane = new JScrollPane(textPane);
+
+        scrollPane.setPreferredSize(new Dimension(850, 180));
+
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        scrollPane.setBorder(null);
+        scrollPane.getViewport().setBackground(new Color(40, 40, 40));
+        add(scrollPane, BorderLayout.CENTER);
+
+
 
         /*
          * Initially make the entire target text faded.
@@ -164,7 +189,49 @@ public class TypingPanel extends JPanel {
 
     }
 
+    private void scrollWhenLineChanges() {
+        int position = session.getCurrentPosition();
 
+        if (textPane.getDocument().getLength() == 0) {
+            return;
+        }
+
+        if(position >= textPane.getDocument().getLength()) {
+            position = textPane.getDocument().getLength() -1;
+        }
+
+        try {
+            Rectangle2D bounds = textPane.modelToView2D(position);
+
+            if (bounds == null) {
+                return;
+            }
+
+            int currentLineY = (int) bounds.getY();
+
+
+            if (lastVisualLineY == -1) {
+                lastVisualLineY = currentLineY;
+
+                return;
+            }
+
+            if (currentLineY != lastVisualLineY) {
+                lastVisualLineY = currentLineY;
+                int lineHeight = textPane.getFontMetrics(getFont()).getHeight();
+                
+                int targetScrollY = currentLineY - (2*lineHeight);
+
+                if (targetScrollY < 0) {
+                    targetScrollY = 0;
+                }
+
+                scrollPane.getViewport().setViewPosition(new Point(0, targetScrollY));
+            }
+        } catch (BadLocationException e) {
+            System.out.println("Couldn't determine current text row");
+        }
+    }
     private void applyTypingUpdate(TypingUpdate update) {
 
         /*
@@ -193,6 +260,7 @@ public class TypingPanel extends JPanel {
          * current target position.
          */
         setUnderline(session.getCurrentPosition(), true);
+        scrollWhenLineChanges();
     }
 
 
@@ -228,7 +296,6 @@ public class TypingPanel extends JPanel {
         StyledDocument document = textPane.getStyledDocument();
         SimpleAttributeSet style = new SimpleAttributeSet();
         StyleConstants.setForeground(style, new Color(220, 90, 90));
-        StyleConstants.setBold(style, true);
         document.setCharacterAttributes(position, 1, style, true);
     }
 
@@ -266,6 +333,15 @@ public class TypingPanel extends JPanel {
         textPane.setText(normalizedText);
         makeTargetTextFaded();
         setUnderline(session.getCurrentPosition(), true);
+        lastVisualLineY = -1;
+
+
+        textPane.setCaretPosition(0);
+
+        SwingUtilities.invokeLater(()-> {
+            scrollPane.getViewport().setViewPosition(new Point(0,0));
+            lastVisualLineY = -1;
+        });
 
         requestFocusInWindow();
     }
@@ -274,10 +350,20 @@ public class TypingPanel extends JPanel {
         String currentText = session.getTargetText();
         session = new TypingSession(currentText);
         textPane.setText(currentText);
+        textPane.setCaretPosition(0);
         makeTargetTextFaded();
         setUnderline(session.getCurrentPosition(), true);
+
+        lastVisualLineY = -1;
+        
+        SwingUtilities.invokeLater(()-> {
+            scrollPane.getViewport().setViewPosition(new Point(0,0));
+            lastVisualLineY = -1;
+        });
+
         requestFocusInWindow();
         parentFrame.resetTimer();
+        
     }
 
 }

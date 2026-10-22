@@ -11,7 +11,6 @@ public class History {
 
     public int wrongCharacterErrorCount;
     public int missingCharacterErrorCount;
-    public int extraCharacterErrorCount;
     public int missingSpaceErrorCount;
 
     public History(TypingSession session) {
