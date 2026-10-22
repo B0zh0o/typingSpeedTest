@@ -126,5 +126,13 @@
     "wrongCharacterErrorCount": 1979,
     "missingCharacterErrorCount": 0,
     "missingSpaceErrorCount": 248
+  },
+  {
+    "id": 1,
+    "sessionId": 1,
+    "sessionWpm": 43,
+    "wrongCharacterErrorCount": 6,
+    "missingCharacterErrorCount": 0,
+    "missingSpaceErrorCount": 0
   }
 ]

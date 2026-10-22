@@ -23,7 +23,7 @@ public class ResultsFrame extends JDialog{
 
         super(parent, "Session Results", true);
 
-        setSize(500, 450);
+        setSize(500, 650);
         setLocationRelativeTo(parent);
 
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
