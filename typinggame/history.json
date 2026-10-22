@@ -52,5 +52,23 @@
     "missingCharacterErrorCount": 1,
     "extraCharacterErrorCount": 0,
     "missingSpaceErrorCount": 5
+  },
+  {
+    "id": 1,
+    "sessionId": 1,
+    "sessionWpm": 35,
+    "wrongCharacterErrorCount": 22,
+    "missingCharacterErrorCount": 41,
+    "extraCharacterErrorCount": 0,
+    "missingSpaceErrorCount": 0
+  },
+  {
+    "id": 1,
+    "sessionId": 1,
+    "sessionWpm": 1,
+    "wrongCharacterErrorCount": 1,
+    "missingCharacterErrorCount": 96,
+    "extraCharacterErrorCount": 0,
+    "missingSpaceErrorCount": 0
   }
 ]
