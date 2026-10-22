@@ -65,13 +65,7 @@ public class TypingGameFrame extends JFrame {
                 }
 
                 if (secondsLeft <= 0) {
-                    typingTimer.stop();
-                    typingPanel.setEnabled(false);
-
-                    History newHistory = new History(typingPanel.session);
-                    historyFileManager.saveHistory(newHistory);
-
-                    typingPanel.showResults();
+                    sessionCompleted();
                 }
             }
         });
@@ -247,6 +241,25 @@ public class TypingGameFrame extends JFrame {
         } else {
             typingPanel.resetSession();
         }
+    }
+
+    public void sessionCompleted() {
+        /*
+        * Prevents the timer from continuing if test is finished. 
+        *
+        */
+       stopTimer();
+
+       int elapsedSeconds = getElapsedSeconds();
+       if (elapsedSeconds <= 0) {
+            elapsedSeconds = 1;
+       }
+
+       History newHistory = new History(typingPanel.session, elapsedSeconds);
+       historyFileManager.saveHistory(newHistory);
+
+       typingPanel.setEnabled(false);
+       typingPanel.showResults();
     }
 
 }

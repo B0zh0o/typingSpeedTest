@@ -244,5 +244,25 @@
         "count": 1
       }
     ]
+  },
+  {
+    "id": 21,
+    "sessionId": 21,
+    "sessionWpm": 20,
+    "sessionRawWpm": 26,
+    "accuracy": 75,
+    "wrongCharacterErrorCount": 5,
+    "missingCharacterErrorCount": 0,
+    "missingSpaceErrorCount": 0,
+    "top5MissedCharacters": [
+      {
+        "character": "g",
+        "count": 4
+      },
+      {
+        "character": "i",
+        "count": 1
+      }
+    ]
   }
 ]

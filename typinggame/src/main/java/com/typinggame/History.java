@@ -19,10 +19,10 @@ public class History {
 
     public List<MissedCharacter> top5MissedCharacters;
 
-    public History(TypingSession session) {
+    public History(TypingSession session, int elapsedSeconds) {
         this.sessionId = session.id;
-        this.sessionWpm = session.wpm;
-        this.sessionRawWpm = session.calculateRawWPM(60);
+        this.sessionWpm = session.calculateWPM(elapsedSeconds);
+        this.sessionRawWpm = session.calculateRawWPM(elapsedSeconds);
         this.accuracy = session.calculateAccuracy();
 
         Map<ErrorType, Long> errorCounts = session.getErrorTracker().getErrorCountsByType();   

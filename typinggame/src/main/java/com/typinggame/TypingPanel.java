@@ -269,7 +269,7 @@ public class TypingPanel extends JPanel {
         if (session.isFinished() && !resultsShown) {
             resultsShown = true;
 
-            showResults();
+            parentFrame.sessionCompleted();
         }
     }
 
@@ -384,11 +384,13 @@ public class TypingPanel extends JPanel {
     public void showResults() {
 
         parentFrame.stopTimer();
+
         int elapsedSeconds = parentFrame.getElapsedSeconds();
 
         if (elapsedSeconds <= 0) {
             elapsedSeconds = 1;
         }
+        
         int wpm = session.calculateWPM(elapsedSeconds);
         int rawWpm = session.calculateRawWPM(elapsedSeconds);
         int accuracy = session.calculateAccuracy();
