@@ -51,7 +51,7 @@ public class TypingGameFrame extends JFrame {
          */
         typingPanel = new TypingPanel(this);
         textFileManager = new TextFileManager();
-        historyFileManager = new HistoryFileManager();
+        historyFileManager = new HistoryFileManager("typinggame/wordsPool");
 
         initialGenerator = new RandomWordGenerator("typinggame/wordsPool");
         loadedText = initialGenerator.generateRandomText(400);

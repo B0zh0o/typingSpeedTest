@@ -12,10 +12,11 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 public class HistoryFileManager {
-    private static final String FILE_NAME = "typinggame/history.json";
+    private final String fileName;
     private final Gson gson;
 
-    public HistoryFileManager() {
+    public HistoryFileManager(String fileName) {
+        this.fileName = fileName;
         this.gson = new GsonBuilder().setPrettyPrinting().create();
     }
 
@@ -28,7 +29,7 @@ public class HistoryFileManager {
 
         historyList.add(newHistory);
 
-        try (FileWriter writer = new FileWriter(FILE_NAME)) {
+        try (FileWriter writer = new FileWriter(fileName)) {
             gson.toJson(historyList, writer);
         } catch (IOException e) {
             e.printStackTrace();
@@ -36,7 +37,7 @@ public class HistoryFileManager {
     }
 
     public List<History> loadAllHistories() {
-        try (FileReader reader = new FileReader(FILE_NAME)) {
+        try (FileReader reader = new FileReader(fileName)) {
             Type listType = new TypeToken<ArrayList<History>>() {}.getType();
             List<History> histories = gson.fromJson(reader, listType);
             return histories != null ? histories : new ArrayList<>();
