@@ -1,4 +1,4 @@
-package com.typinggame.Logic;
+package com.typinggame.logic;
 
 /**
  * 

@@ -1,8 +1,8 @@
-package com.typinggame.GUI;
+package com.typinggame.gui;
 
-import com.typinggame.Model.History;
-import com.typinggame.Model.MissedCharacter;
-import com.typinggame.Service.HistoryFileManager;
+import com.typinggame.model.History;
+import com.typinggame.model.MissedCharacter;
+import com.typinggame.service.HistoryFileManager;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;

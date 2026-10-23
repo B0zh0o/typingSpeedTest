@@ -2,8 +2,8 @@ package com.typinggame;
 
 import org.junit.jupiter.api.Test;
 
-import com.typinggame.Logic.TypingSession;
-import com.typinggame.Logic.TypingUpdate;
+import com.typinggame.logic.TypingSession;
+import com.typinggame.logic.TypingUpdate;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -2,9 +2,9 @@ package com.typinggame;
 
 import org.junit.jupiter.api.Test;
 
-import com.typinggame.Logic.ErrorTracker;
-import com.typinggame.Model.ErrorType;
-import com.typinggame.Model.TypingError;
+import com.typinggame.logic.ErrorTracker;
+import com.typinggame.model.ErrorType;
+import com.typinggame.model.TypingError;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

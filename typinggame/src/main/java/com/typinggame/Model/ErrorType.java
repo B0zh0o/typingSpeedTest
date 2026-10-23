@@ -1,4 +1,4 @@
-package com.typinggame.Model;
+package com.typinggame.model;
 
 /**
  * Enum class to categorize types of errors into 3.

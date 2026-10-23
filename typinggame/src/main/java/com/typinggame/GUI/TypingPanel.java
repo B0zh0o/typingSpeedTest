@@ -1,6 +1,6 @@
-package com.typinggame.GUI;
+package com.typinggame.gui;
 
-import com.typinggame.Logic.TypingUpdate;
+import com.typinggame.logic.TypingUpdate;
 import java.awt.Point;
 import javax.swing.SwingUtilities;
 import javax.swing.BorderFactory;
@@ -16,7 +16,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-import com.typinggame.Logic.TypingSession;
+import com.typinggame.logic.TypingSession;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

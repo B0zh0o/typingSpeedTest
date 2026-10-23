@@ -5,9 +5,9 @@ import java.io.File;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-import com.typinggame.Logic.TypingSession;
-import com.typinggame.Model.History;
-import com.typinggame.Service.HistoryFileManager;
+import com.typinggame.logic.TypingSession;
+import com.typinggame.model.History;
+import com.typinggame.service.HistoryFileManager;
 
 import static org.junit.jupiter.api.Assertions.*;
 

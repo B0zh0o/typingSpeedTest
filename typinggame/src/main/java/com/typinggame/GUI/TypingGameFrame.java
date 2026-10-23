@@ -1,4 +1,4 @@
-package com.typinggame.GUI;
+package com.typinggame.gui;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -6,10 +6,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import com.typinggame.Model.History;
-import com.typinggame.Service.HistoryFileManager;
-import com.typinggame.Service.RandomWordGenerator;
-import com.typinggame.Service.TextFileManager;
+import com.typinggame.model.History;
+import com.typinggame.service.HistoryFileManager;
+import com.typinggame.service.RandomWordGenerator;
+import com.typinggame.service.TextFileManager;
 
 import javax.swing.JLabel;
 

@@ -1,10 +1,10 @@
-package com.typinggame.Model;
+package com.typinggame.model;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.typinggame.Logic.TypingSession;
+import com.typinggame.logic.TypingSession;
 
 //*
 // A model for the History objects

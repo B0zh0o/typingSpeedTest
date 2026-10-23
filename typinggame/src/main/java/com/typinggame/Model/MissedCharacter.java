@@ -1,4 +1,4 @@
-package com.typinggame.Model;
+package com.typinggame.model;
 
 //* A model needed for History */
 

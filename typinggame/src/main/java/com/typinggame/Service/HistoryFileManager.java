@@ -1,4 +1,4 @@
-package com.typinggame.Service;
+package com.typinggame.service;
 
 //* A class responsible for logging the history in a text file */
 
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.typinggame.Model.History;
+import com.typinggame.model.History;
 
 public class HistoryFileManager {
     private final String fileName;

@@ -1,4 +1,4 @@
-package com.typinggame.GUI;
+package com.typinggame.gui;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;

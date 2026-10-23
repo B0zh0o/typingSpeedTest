@@ -2,7 +2,7 @@ package com.typinggame;
 
 import javax.swing.SwingUtilities;
 
-import com.typinggame.GUI.TypingGameFrame;
+import com.typinggame.gui.TypingGameFrame;
 
 public class Main {
 
