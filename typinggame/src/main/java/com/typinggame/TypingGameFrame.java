@@ -9,10 +9,14 @@ import javax.swing.JLabel;
 
 import java.awt.BorderLayout;
 import java.io.IOException;
-import java.util.Random;
 
+/**
+ * Represents the main frame for the program.
+ * Manages typing panel, timer, controls, history, 
+ * and starting and resetting sessions.
+ */
 public class TypingGameFrame extends JFrame {
-
+    
     private TypingPanel typingPanel;
     private TextFileManager textFileManager;
     private String loadedText;
@@ -23,6 +27,9 @@ public class TypingGameFrame extends JFrame {
     private JLabel timerLabel;
     private JLabel wpmLabel;
 
+    /**
+     * Creates and initializes main frame.
+     */
     public TypingGameFrame() {
 
         /*
@@ -133,16 +140,17 @@ public class TypingGameFrame extends JFrame {
         JButton resetButton = new JButton("Reset");
 
         resetButton.addActionListener(e -> {
-                if (typingPanel.session.getTargetText() == null || typingPanel.session.getTargetText().isBlank()) {
-                    JOptionPane.showMessageDialog(
-                        this,
-                        "No text loaded to reset.",
-                        "Empty Text",
-                        JOptionPane.WARNING_MESSAGE
-                    );
-                    return;
+            if (typingPanel.session.getTargetText() == null
+                || typingPanel.session.getTargetText().isBlank()) {
+                JOptionPane.showMessageDialog(
+                    this,
+                    "No text loaded to reset.",
+                    "Empty Text",
+                    JOptionPane.WARNING_MESSAGE
+                );
+                return;
                 }
-                resetTimer();
+            resetTimer();
         });
 
         JButton historyButton = new JButton("History");
@@ -172,7 +180,6 @@ public class TypingGameFrame extends JFrame {
          */
         add(typingPanel, BorderLayout.CENTER);
 
-
         JPanel bottomPanel = new JPanel();
 
         bottomPanel.add(resetButton);
@@ -182,18 +189,23 @@ public class TypingGameFrame extends JFrame {
 
     }
 
-    /*
-     * Used by Main after the frame becomes visible.
+    /**
+     * Asks swing to give keyboard focus.
      */
     public void requestTypingFocus() {
         typingPanel.requestFocusInWindow();
     }
 
+    /**
+     * Starts a new session and enables the target text.
+     *
+     * @param text is the text from the program
+     */
     private void startNewSession(String text) {
         typingPanel.setTargetText(text);
         typingPanel.setEnabled(true);
 
-        if(typingTimer != null) {
+        if (typingTimer != null) {
             if (typingTimer.isRunning()) {
                 typingTimer.stop();
             }
@@ -203,6 +215,9 @@ public class TypingGameFrame extends JFrame {
         }
     }
 
+    /**
+     * Continues game after history.
+     */
     public void resumeGameAfterHistory() {
         if (secondsLeft > 0) {
             typingPanel.setEnabled(true);
@@ -210,21 +225,36 @@ public class TypingGameFrame extends JFrame {
         }
     }
 
+    /**
+     * Gets the elapsed seconds counting down from 60.
+     *
+     * @return elapsed time
+     */
     public int getElapsedSeconds() {
         return 60 - secondsLeft;
     }
 
+    /**
+     * Stops the timer if typingTimer isnt null.
+     */
     public void stopTimer() {
-        if(typingTimer != null) {
+        if (typingTimer != null) {
             typingTimer.stop();
         }
     }
 
+    /**
+     * Starts timer.
+     */
     public void startTimerIfNeeded() {
         if (typingTimer != null && !typingTimer.isRunning() && secondsLeft > 0) {
             typingTimer.start();
         }
     }
+
+    /**
+     * Resets timer.
+     */
     public void resetTimer() {
         if (typingTimer != null) {
             typingTimer.stop();
@@ -234,7 +264,8 @@ public class TypingGameFrame extends JFrame {
         timerLabel.setText("60s");
         wpmLabel.setText("WPM: 0");
         
-        if (typingPanel.session.getTargetText() == null || typingPanel.session.getTargetText().isBlank()) {
+        if (typingPanel.session.getTargetText() == null
+            || typingPanel.session.getTargetText().isBlank()) {
             RandomWordGenerator generator = new RandomWordGenerator("typinggame/wordsPool");
             loadedText = generator.generateRandomText(400);
             startNewSession(loadedText);
@@ -243,23 +274,22 @@ public class TypingGameFrame extends JFrame {
         }
     }
 
+    /**
+     * Prevents the user from continuing session after it is completed.
+     */
     public void sessionCompleted() {
-        /*
-        * Prevents the timer from continuing if test is finished. 
-        *
-        */
-       stopTimer();
+        stopTimer();
+        int elapsedSeconds = getElapsedSeconds();
 
-       int elapsedSeconds = getElapsedSeconds();
-       if (elapsedSeconds <= 0) {
+        if (elapsedSeconds <= 0) {
             elapsedSeconds = 1;
-       }
+        }
 
-       History newHistory = new History(typingPanel.session, elapsedSeconds);
-       historyFileManager.saveHistory(newHistory);
+        History newHistory = new History(typingPanel.session, elapsedSeconds);
+        historyFileManager.saveHistory(newHistory);
 
-       typingPanel.setEnabled(false);
-       typingPanel.showResults();
+        typingPanel.setEnabled(false);
+        typingPanel.showResults();
     }
 
 }

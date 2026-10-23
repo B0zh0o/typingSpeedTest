@@ -7,7 +7,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.JScrollPane;
 import java.awt.Dimension;
-import java.awt.GridBagLayout;
 import java.util.List;
 import java.util.Map;
 
@@ -21,17 +20,14 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.text.NumberFormat;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Highlighter;
-import javax.swing.text.JTextComponent;
 
-import java.awt.Graphics;
-import java.awt.Shape;
-import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
-import com.typinggame.TypingGameFrame; 
 
+/**
+ * TypingPanel class displays typing text, handles keyboard input,
+ * applies character styling and manages scrolling.
+ */
 public class TypingPanel extends JPanel {
 
     private JTextPane textPane;
@@ -41,6 +37,11 @@ public class TypingPanel extends JPanel {
     private int lastVisualLineY = -1;
     private boolean resultsShown = false;
 
+    /**
+     * Creates the main panel.
+     *
+     * @param parentFrame is the main frame
+     */
     public TypingPanel(TypingGameFrame parentFrame) {
 
         String targetText = "";
@@ -53,7 +54,6 @@ public class TypingPanel extends JPanel {
          */
         setLayout(new BorderLayout());
         
-
         /*
          * Dark background for the panel.
          */
@@ -71,9 +71,8 @@ public class TypingPanel extends JPanel {
          */
         textPane = new JTextPane() {
 
-
-            @Override 
-            public boolean getScrollableTracksViewportWidth(){
+            @Override
+            public boolean getScrollableTracksViewportWidth() {
                 return true;
             }
         };
@@ -111,8 +110,6 @@ public class TypingPanel extends JPanel {
         scrollPane.getViewport().setBackground(new Color(40, 40, 40));
         add(scrollPane, BorderLayout.CENTER);
 
-
-
         /*
          * Initially make the entire target text faded.
          */
@@ -132,63 +129,59 @@ public class TypingPanel extends JPanel {
          */
         addKeyListener(new KeyAdapter() {
 
-        @Override
-        public void keyTyped(KeyEvent e) {
+            @Override
+            public void keyTyped(KeyEvent e) {
 
-            char typedCharacter = e.getKeyChar();
+                char typedCharacter = e.getKeyChar();
 
-            /*
-            * Backspace is handled in keyPressed().
-             */
-            if (typedCharacter == '\b') {
-                return;
-            }
+                if (typedCharacter == '\b') {
+                    return;
+                }
 
-            /*
-             * Ignore tabs/newlines.
-             * A normal Space is still allowed.
-             */
-            if (Character.isWhitespace(typedCharacter) && typedCharacter != ' ') {
-                return;
-            }
+                /*
+                 * Ignore tabs/newlines.
+                 * A normal Space is still allowed.
+                 */
+                if (Character.isWhitespace(typedCharacter) && typedCharacter != ' ') {
+                    return;
+                }
 
-            /*
-             * Don't allow more typing after the test
-             * is completely finished.
-             */
-            if (session.isFinished()) {
-                return;
-            }
+                /**
+                 * Dont allow for more typing after session ends.
+                 */
+                if (session.isFinished()) {
+                    return;
+                }
 
-            if (parentFrame != null) {
-                parentFrame.startTimerIfNeeded();
-            }
+                if (parentFrame != null) {
+                    parentFrame.startTimerIfNeeded();
+                }
 
-            int oldPosition =
-                session.getCurrentPosition();
-
-            setUnderline(oldPosition, false);
-
-            TypingUpdate update = session.handleTypedCharacter(typedCharacter);
-
-            applyTypingUpdate(update);
-        }
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-
-            if (e.getKeyCode()== KeyEvent.VK_BACK_SPACE) {
-
-                int oldPosition = session.getCurrentPosition();
+                int oldPosition =
+                    session.getCurrentPosition();
 
                 setUnderline(oldPosition, false);
 
-                TypingUpdate update = session.handleBackspace();
+                TypingUpdate update = session.handleTypedCharacter(typedCharacter);
 
                 applyTypingUpdate(update);
             }
-        }
-    });
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+                if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+
+                    int oldPosition = session.getCurrentPosition();
+
+                    setUnderline(oldPosition, false);
+
+                    TypingUpdate update = session.handleBackspace();
+
+                    applyTypingUpdate(update);
+                }
+            } 
+        });
 
 
     }
@@ -200,8 +193,8 @@ public class TypingPanel extends JPanel {
             return;
         }
 
-        if(position >= textPane.getDocument().getLength()) {
-            position = textPane.getDocument().getLength() -1;
+        if (position >= textPane.getDocument().getLength()) {
+            position = textPane.getDocument().getLength() - 1;
         }
 
         try {
@@ -223,8 +216,8 @@ public class TypingPanel extends JPanel {
             if (currentLineY != lastVisualLineY) {
                 lastVisualLineY = currentLineY;
                 int lineHeight = textPane.getFontMetrics(getFont()).getHeight();
-                
-                int targetScrollY = currentLineY - (2*lineHeight);
+
+                int targetScrollY = currentLineY - (2 * lineHeight);
 
                 if (targetScrollY < 0) {
                     targetScrollY = 0;
@@ -242,7 +235,7 @@ public class TypingPanel extends JPanel {
          * Backspace has undone these positions
          */
         for (int position : update.getResetPositions()) {
-                markTargetCharacter(position);
+            markTargetCharacter(position);
         }
 
         /*
@@ -272,7 +265,6 @@ public class TypingPanel extends JPanel {
             parentFrame.sessionCompleted();
         }
     }
-
 
     /*
      * Makes the entire target text faded.
@@ -312,7 +304,6 @@ public class TypingPanel extends JPanel {
     /*
      * Changes a character back to the faded target colour.
      *
-     * Currently used when Backspace is pressed. I cant get it to work 
      */
     private void markTargetCharacter(int position) {
 
@@ -328,7 +319,7 @@ public class TypingPanel extends JPanel {
 
     private void setUnderline(int position, boolean underline) {
         if (position < 0 || position >= session.getTargetText().length()) {
-            return; 
+            return;
         }
 
         StyledDocument document = textPane.getStyledDocument();
@@ -337,8 +328,16 @@ public class TypingPanel extends JPanel {
         document.setCharacterAttributes(position, 1, style, false);
     }
 
+    /**
+     * Normalizes the target text to remove windows generated new lines
+     * to regular new lines.
+     *
+     * @param targetText is the text that is expected to be ran
+     */
     public void setTargetText(String targetText) {
-        String normalizedText = targetText.replace("\r\n", "\n").replace("\r", "\n").replaceAll(" +\n", "\n");
+        String normalizedText = targetText.replace("\r\n", "\n")
+            .replace("\r", "\n")
+            .replaceAll(" +\n", "\n");
         session = new TypingSession(normalizedText);
 
         resultsShown = false;
@@ -348,17 +347,19 @@ public class TypingPanel extends JPanel {
         setUnderline(session.getCurrentPosition(), true);
         lastVisualLineY = -1;
 
-
         textPane.setCaretPosition(0);
 
-        SwingUtilities.invokeLater(()-> {
-            scrollPane.getViewport().setViewPosition(new Point(0,0));
+        SwingUtilities.invokeLater(() -> {
+            scrollPane.getViewport().setViewPosition(new Point(0, 0));
             lastVisualLineY = -1;
         });
 
         requestFocusInWindow();
     }
 
+    /**
+     * Resets current session.
+     */
     public void resetSession() {
         String currentText = session.getTargetText();
         session = new TypingSession(currentText);
@@ -369,11 +370,9 @@ public class TypingPanel extends JPanel {
         textPane.setCaretPosition(0);
         makeTargetTextFaded();
         setUnderline(session.getCurrentPosition(), true);
-
         lastVisualLineY = -1;
-        
-        SwingUtilities.invokeLater(()-> {
-            scrollPane.getViewport().setViewPosition(new Point(0,0));
+        SwingUtilities.invokeLater(() -> {
+            scrollPane.getViewport().setViewPosition(new Point(0, 0));
             lastVisualLineY = -1;
         });
 
@@ -381,6 +380,9 @@ public class TypingPanel extends JPanel {
         setEnabled(true);
     }
 
+    /**
+     * Calls the generation of a results frame with the correct parameters.
+     */
     public void showResults() {
 
         parentFrame.stopTimer();
