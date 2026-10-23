@@ -47,7 +47,7 @@ public class HistoryFrame extends JDialog {
         mainPanel.add(title);
         mainPanel.add(Box.createVerticalStrut(20));
 
-        HistoryFileManager historyFileManager = new HistoryFileManager("typinggame/wordsPool");
+        HistoryFileManager historyFileManager = new HistoryFileManager("typinggame/history.json");
         List<History> allHistories = historyFileManager.loadAllHistories();
 
         if (allHistories.isEmpty()) {
