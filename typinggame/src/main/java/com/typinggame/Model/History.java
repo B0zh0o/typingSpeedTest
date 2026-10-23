@@ -6,6 +6,10 @@ import java.util.Map;
 
 import com.typinggame.Logic.TypingSession;
 
+//*
+// A model for the History objects
+//*
+
 public class History {
     public int id;
     public int sessionId;

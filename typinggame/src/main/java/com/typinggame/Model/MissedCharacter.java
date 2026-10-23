@@ -1,5 +1,7 @@
 package com.typinggame.Model;
 
+//* A model needed for History */
+
 public class MissedCharacter {
     public char character;
     public long count;

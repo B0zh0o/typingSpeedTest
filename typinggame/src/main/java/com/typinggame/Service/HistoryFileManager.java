@@ -1,6 +1,6 @@
 package com.typinggame.Service;
 
-
+//* A class responsible for logging the history in a text file */
 
 import java.io.FileWriter;
 import java.io.IOException;

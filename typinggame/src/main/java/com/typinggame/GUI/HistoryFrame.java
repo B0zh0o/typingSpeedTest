@@ -18,6 +18,10 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.util.List;
 
+/**
+ * A class responsible for loading the frame and showing the needed history information
+ * **/
+
 public class HistoryFrame extends JDialog {
 
     public HistoryFrame(JFrame parent) {
@@ -85,7 +89,7 @@ public class HistoryFrame extends JDialog {
                 sessionCard.add(Box.createVerticalStrut(5));
 
                 JLabel errorsLabel = new JLabel(String.format("Errors -> Wrong: %d, Missing Char: %d, Missing Space: %d", 
-                    h.wrongCharacterErrorCount, h.missingCharacterErrorCount, h.missingSpaceErrorCount));
+                h.wrongCharacterErrorCount, h.missingCharacterErrorCount, h.missingSpaceErrorCount));
                 errorsLabel.setFont(new Font("Monospaced", Font.PLAIN, 12));
                 errorsLabel.setForeground(new Color(170, 170, 170));
                 sessionCard.add(errorsLabel);

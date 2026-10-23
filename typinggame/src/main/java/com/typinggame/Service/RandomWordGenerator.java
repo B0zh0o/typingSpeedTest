@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.io.IOException;
 
+//* A class responsible for reading the big file with words and picking on random from it */
 
 public class RandomWordGenerator {
     private List<String> randomlyGeneratedWords;
