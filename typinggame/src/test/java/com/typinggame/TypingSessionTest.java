@@ -2,6 +2,8 @@ package com.typinggame;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TypingSessionTest {
     @Test
@@ -41,5 +43,42 @@ public class TypingSessionTest {
 
         assertEquals(0, session.calculateWPM(0), "WPM should be 0 if elapsed time is 0.");
         assertEquals(0, session.calculateRawWPM(0), "Raw WPM should be 0 if elapsed time is 0.");
+    }
+
+    @Test
+    public void correctCharacterMovesPosition() {
+        TypingSession session = new TypingSession("abc");
+
+        TypingUpdate update = session.handleTypedCharacter('a');
+
+        /*
+         * This assertion shows that handling a character 'a' in "abc" moves the position in the text by 1.
+         * It also shows that there exists a position 0 in correctPositions,
+         * as a was the correct key press.
+         */
+        assertEquals(1, session.getCurrentPosition());
+        assertTrue(update.getCorrectPositions().contains(0));
+    }
+
+    @Test 
+    public void wrongCharacterCausesError() {
+        TypingSession session = new TypingSession("abc");
+
+        TypingUpdate update = session.handleTypedCharacter('x');
+
+        /*
+         * This assertion shows that a incorrect character 'x' in "abc" causes its position
+         * to be sent to incorrectPositions list.
+         */
+        assertEquals(1, session.getCurrentPosition());
+        assertTrue(update.getIncorrectPositions().contains(0));
+    }
+
+    @Test 
+    public void sessionEndsAfterFinalCharacter() {
+        TypingSession sessionCorrect = new TypingSession("ab");
+
+        sessionCorrect.handleTypedCharacter('a');
+        sessionCorrect.handleTypedCharacter('b');
     }
 }
