@@ -2,6 +2,8 @@ package com.typinggame;
 
 import javax.swing.SwingUtilities;
 
+import com.typinggame.GUI.TypingGameFrame;
+
 public class Main {
 
     public static void main(String[] args) {

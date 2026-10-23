@@ -5,11 +5,13 @@ import java.io.IOException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import com.typinggame.Service.RandomWordGenerator;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 
 class RandomWordGeneratorTest {
     private static final String TEST_WORDS_FILE = "test_words.txt";

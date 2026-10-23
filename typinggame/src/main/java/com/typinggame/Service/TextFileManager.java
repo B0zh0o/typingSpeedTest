@@ -1,4 +1,4 @@
-package com.typinggame;
+package com.typinggame.Service;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;

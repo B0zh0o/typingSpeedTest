@@ -1,4 +1,4 @@
-package com.typinggame;
+package com.typinggame.Logic;
 
 import java.util.ArrayList;
 import java.util.List;

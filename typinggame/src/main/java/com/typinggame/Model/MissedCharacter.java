@@ -1,4 +1,4 @@
-package com.typinggame;
+package com.typinggame.Model;
 
 public class MissedCharacter {
     public char character;

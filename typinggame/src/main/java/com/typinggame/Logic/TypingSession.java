@@ -1,7 +1,11 @@
-package com.typinggame;
+package com.typinggame.Logic;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import com.typinggame.Model.ErrorType;
+import com.typinggame.Model.TypingError;
+
 import java.util.List;
 
 

@@ -1,5 +1,8 @@
-package com.typinggame;
+package com.typinggame.GUI;
 
+import com.typinggame.Model.History;
+import com.typinggame.Model.MissedCharacter;
+import com.typinggame.Service.HistoryFileManager;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -14,7 +17,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.util.List;
-import java.util.Map;
 
 public class HistoryFrame extends JDialog {
 

@@ -1,9 +1,12 @@
-package com.typinggame;
+package com.typinggame.Logic;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import com.typinggame.Model.ErrorType;
+import com.typinggame.Model.TypingError;
 
 /**
  * Class to track the errors made in the text.

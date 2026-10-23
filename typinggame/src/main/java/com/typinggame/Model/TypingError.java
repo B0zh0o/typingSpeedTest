@@ -1,4 +1,4 @@
-package com.typinggame;
+package com.typinggame.Model;
 
 /**
  * TypingError class creates a type of error error.

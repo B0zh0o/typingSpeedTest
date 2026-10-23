@@ -4,9 +4,13 @@ import java.io.File;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+
+import com.typinggame.Logic.TypingSession;
+import com.typinggame.Model.History;
+import com.typinggame.Service.HistoryFileManager;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.File;
 import java.util.List;
 
 class HistoryManagerTest {

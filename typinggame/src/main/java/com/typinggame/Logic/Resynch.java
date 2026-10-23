@@ -1,5 +1,10 @@
-package com.typinggame;
+package com.typinggame.Logic;
 
+/**
+ * 
+ * Resynch class realigns the target text and the typed text
+ * By consuming a character when necessary.
+ */
 public class Resynch {
 
     private final int position;

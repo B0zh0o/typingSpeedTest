@@ -1,10 +1,10 @@
-package com.typinggame;
+package com.typinggame.Model;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.typinggame.TypingSession;
+import com.typinggame.Logic.TypingSession;
 
 public class History {
     public int id;

@@ -1,4 +1,6 @@
-package com.typinggame;
+package com.typinggame.Service;
+
+
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -10,6 +12,7 @@ import java.util.ArrayList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.typinggame.Model.History;
 
 public class HistoryFileManager {
     private final String fileName;

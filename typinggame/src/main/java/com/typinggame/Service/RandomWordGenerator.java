@@ -1,4 +1,4 @@
-package com.typinggame;
+package com.typinggame.Service;
 
 import java.util.List;
 import java.util.Arrays;
