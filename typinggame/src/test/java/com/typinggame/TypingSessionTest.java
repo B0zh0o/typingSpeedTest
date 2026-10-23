@@ -3,6 +3,7 @@ package com.typinggame;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TypingSessionTest {
@@ -76,9 +77,17 @@ public class TypingSessionTest {
 
     @Test 
     public void sessionEndsAfterFinalCharacter() {
-        TypingSession sessionCorrect = new TypingSession("ab");
+        TypingSession session = new TypingSession("ab");
+        /*
+         * Session shouldn't be finished as 'b' isn't processed.
+         */
+        session.handleTypedCharacter('a');
+        assertFalse(session.isFinished());
 
-        sessionCorrect.handleTypedCharacter('a');
-        sessionCorrect.handleTypedCharacter('b');
+        /*
+         * Session should be finished as last character 'b' is processed.
+         */
+        session.handleTypedCharacter('b');
+        assertTrue(session.isFinished());
     }
 }
