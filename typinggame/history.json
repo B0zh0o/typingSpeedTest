@@ -264,5 +264,37 @@
         "count": 1
       }
     ]
+  },
+  {
+    "id": 22,
+    "sessionId": 22,
+    "sessionWpm": 22,
+    "sessionRawWpm": 291,
+    "accuracy": 6,
+    "wrongCharacterErrorCount": 805,
+    "missingCharacterErrorCount": 1,
+    "missingSpaceErrorCount": 206,
+    "top5MissedCharacters": [
+      {
+        "character": " ",
+        "count": 184
+      },
+      {
+        "character": "e",
+        "count": 92
+      },
+      {
+        "character": "o",
+        "count": 92
+      },
+      {
+        "character": "d",
+        "count": 46
+      },
+      {
+        "character": "h",
+        "count": 46
+      }
+    ]
   }
 ]
