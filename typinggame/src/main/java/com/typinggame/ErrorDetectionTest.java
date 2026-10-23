@@ -103,8 +103,7 @@ public class ErrorDetectionTest {
             return;
         }
 
-        for (TypingError error :
-                session.getErrorTracker().getErrors()) {
+        for (TypingError error : session.getErrorTracker().getErrors()) {
 
             System.out.println(
                 "Type:      " + error.getType()

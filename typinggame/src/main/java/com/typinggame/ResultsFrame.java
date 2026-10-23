@@ -15,8 +15,21 @@ import java.awt.Font;
 import java.util.List;
 import java.util.Map;
 
-public class ResultsFrame extends JDialog{
+/**
+ * Class to create a frame containing the results of a session.
+ *
+ */
+public class ResultsFrame extends JDialog {
 
+    /**
+     * Constructor to initialize an object of a resultFrame.
+     * 
+     * @param parent parent frame
+     * @param wpm words per minute
+     * @param rawWpm raw words per minute (errors included too)
+     * @param accuracy accuracy of expected text vs typed text
+     * @param top5 top 5 errors
+     */
     public ResultsFrame(JFrame parent, int wpm, int rawWpm, int accuracy, List<Map.Entry<Character, Long>> top5) {
 
         super(parent, "Session Results", true);
@@ -36,7 +49,7 @@ public class ResultsFrame extends JDialog{
         mainPanel.setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40));
 
         JLabel title = new JLabel("Session Results");
-        title.setFont(new Font("Monospaced", Font.BOLD, 30) );
+        title.setFont(new Font("Monospaced", Font.BOLD, 30));
         title.setForeground(new Color(255, 255, 255));
 
         title.setAlignmentX(CENTER_ALIGNMENT);
@@ -45,7 +58,7 @@ public class ResultsFrame extends JDialog{
 
         mainPanel.add(Box.createVerticalStrut(30));
 
-        JLabel wpmLabel = new JLabel("WPM: " + wpm );
+        JLabel wpmLabel = new JLabel("WPM: " + wpm);
         styleStatisticLabel(wpmLabel);
         mainPanel.add(wpmLabel);
 
@@ -72,8 +85,8 @@ public class ResultsFrame extends JDialog{
         mainPanel.add(missedTitle);
         mainPanel.add(Box.createVerticalStrut(20));
 
-        /*
-        * TOp 5 most missed characters
+        /**
+         * Enters the top 5 errors in a map.
          */
         for (int i = 0; i < top5.size(); i++) {
             Map.Entry<Character, Long> entry = top5.get(i);
@@ -88,7 +101,12 @@ public class ResultsFrame extends JDialog{
                 characterText = String.valueOf(c);
             }
 
-            JLabel resultLabel = new JLabel((i+1) + ". " + characterText + " -- " + entry.getValue() + " errors");
+            JLabel resultLabel = new JLabel((i + 1)
+             + ". " 
+             + characterText 
+             + " -- " 
+             + entry.getValue() 
+             + " errors");
 
             resultLabel.setFont(new Font("Monospaced", Font.PLAIN, 19));
 
@@ -99,15 +117,19 @@ public class ResultsFrame extends JDialog{
             mainPanel.add(resultLabel);
             mainPanel.add(Box.createVerticalStrut(10));
         }
-            add(mainPanel, BorderLayout.CENTER);
+        add(mainPanel, BorderLayout.CENTER);
     }
 
+    /**
+     * Creates a style for labels.
+     * 
+     * @param label parameter for displayed text
+     */
     private void styleStatisticLabel(JLabel label) {
         label.setFont(new Font("Monospaced", Font.BOLD, 24));
 
         label.setForeground(new Color(255, 255, 255));
         label.setAlignmentX(CENTER_ALIGNMENT);
     }
-
     
 }
